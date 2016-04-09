@@ -6,17 +6,29 @@
 #
 
 # MAKE VARIABLES
-EXEC = matrixMult
-OBJ = matrixMult.o
-CFLAGS = -Wall -ansi -pedantic -g
+EXEC1 = multiProcess
+OBJ1 = multiProcess.o
+EXEC2 = multiThread
+OBJ2 = multiThread.o
+
+CFLAGS = -Wall -Wextra -Werror -std=c99 -g
 CC = gcc
 
 # RULES + DEPENDENCIES
-$(EXEC) : $(OBJ)
-	$(CC) $(OBJ) -o $(EXEC)
 
-matrixMult.o : matrixMult.h
-	$(CC) -c matrixMult.c $(CFLAGS)
-				
+$(EXEC1) : $(OBJ1)
+	$(CC) $(OBJ1) -o $(EXEC1)	
+
+multiProcess.o : multiProcess.c multiProcess.h
+	$(CC) -c multiProcess.c $(CFLAGS)
+
 clean:
-	rm -f $(EXEC) $(OBJ)
+	rm -f $(EXEC1) $(OBJ1) $(EXEC2) $(OBJ2)
+
+# UNCOMMENT FOR WHEN PART A IS COMPLETE!	
+#all:
+#	$(EXEC1) $(EXEC2)
+#multiThread.o : multiThread.c multiThread.h
+#	$(CC) -c multiThread.c $(CFLAGS)
+#$(EXEC2) : $(OBJ2)
+#	$(CC) $(OBJ2) -o $(EXEC2)
