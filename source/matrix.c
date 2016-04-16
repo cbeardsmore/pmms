@@ -26,9 +26,9 @@ Matrix* makeMatrix(int rows, int cols)
 		newMatrix->cols = cols;
 
 		// ALLOCATE MEMORY FOR ACTUAL ELEMENTS
-		newMatrix->matrix = (int**)calloc( rows, sizeof(int*) );
+		newMatrix->elements = (int**)calloc( rows, sizeof(int*) );
 		for ( int ii = 0; ii < rows; ii++ )
-			newMatrix->matrix[ii] = (int*)calloc( cols, sizeof(int) );
+			newMatrix->elements[ii] = (int*)calloc( cols, sizeof(int) );
 
 
 		return newMatrix;
@@ -42,9 +42,9 @@ void freeMatrix(Matrix* oldMatrix)
 {
 	// FREE EVERY INDIVIDUAL ROW OF THE MATRIX
 	for ( int ii = 0; ii < oldMatrix->rows; ii++ )
-			free( oldMatrix->matrix[ii] );
+			free( oldMatrix->elements[ii] );
 
-	free( oldMatrix->matrix );
+	free( oldMatrix->elements );
 
 	// FREE THE ACTUAL STRUCT
 	free(oldMatrix);
@@ -63,7 +63,7 @@ void printMatrix(Matrix* newMatrix)
 	{	
 		for ( int jj = 0; jj < newMatrix->cols; jj++ )
 		{	
-			printf("%d ", newMatrix->matrix[ii][jj] );
+			printf("%d ", newMatrix->elements[ii][jj] );
 		}
 		printf("\n");	
 	}

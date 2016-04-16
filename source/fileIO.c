@@ -18,9 +18,24 @@
 
 int readFile( char* filename, Matrix* matrix )
 {
-	int status = 0;
-	filename = NULL;
-	matrix = NULL;
-	return status;
+	int nRead;
+
+	// ENSURE FILE OPENED CORRECTLY
+	FILE* f = fopen( filename, "r" );
+
+	if ( f == NULL )
+	{
+		perror( "ERROR opening file!\n" );
+		return -1;
+	}
+
+
+	for ( int ii = 0; ii < matrix->rows; ii++ )
+		for ( int jj = 0; jj < matrix->cols; jj++ )
+			nRead = fscanf( f, "%d", &matrix->elements[ii][jj] );
+
+
+	fclose(f);
+	return 0;
 }
 //-------------------------------------------------------------------------- 
