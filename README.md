@@ -5,16 +5,21 @@
 
 #####Purpose
 
+Implementation of matrix multiplication in C, utilizing either multiple processes /OR/ multiple threads.
  
 #####File List
 
 	.c FILES
 	--------
-	
+	multiProcess.c
+	matrix.c
+	fileIO.c
 
 	.h FILES
 	--------
-	
+	multiProcess.h
+	matrix.h
+	fileIO.h
 
 	OTHER
 	-----
@@ -24,5 +29,20 @@
 
 #####Instructions to Run
 
+*For Multiprocess:*
+
+	./multiProcess [file A] [file B] [M] [N] [K]
+
+*For Multithreads:*  
+
+	./multiThread [file A] [file B] [M] [N] [K]
+	
+*where:*  
+  
+- file A = Matrix A Filename
+- file B = Matrix B Filename
+- M = Matrix A Rows
+- N = Matrix A Columns / Matrix B Rows
+- K = Matrix B Columns	
 
 #####References

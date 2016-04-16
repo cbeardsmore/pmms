@@ -7,21 +7,25 @@
  *  REQUIRES: NONE			   
  ***************************************************************************/
 
-// STRUCT DECLARATIONS
+#ifndef MATRIX_H
 
-typedef struct 
-{
-	int cols;
-	int rows;
-	int** matrix;
-} Matrix;
+ 	#define MATRIX_H
 
 //--------------------------------------------------------------------------
-// FUNCTION PROTOTYPES
 
-Matrix* makeMatrix(int, int);
-void freeMatrix(Matrix*);
-void printMatrix(Matrix*);
+	typedef struct 
+	{
+		int cols;
+		int rows;
+		int** matrix;
+	} Matrix;
+
+//--------------------------------------------------------------------------
+
+	Matrix* makeMatrix(int, int);
+	void freeMatrix(Matrix*);
+	void printMatrix(Matrix*);
 
 //--------------------------------------------------------------------------
  
+#endif

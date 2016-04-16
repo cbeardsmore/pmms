@@ -4,13 +4,12 @@
  *	UNIT: OS200 Assignment S1 - 2016 														   
  *	PURPOSE: 
  *	LAST MOD: 16/04/16	
- *  REQUIRES: stdio.h, stdlib.h, multiProcess.h, matrix.h				   
+ *  REQUIRES: stdio.h, stdlib.h, multiProcess.h				   
  ***************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "multiProcess.h"
-#include "matrix.h" 
+#include "multiProcess.h" 
 
 //--------------------------------------------------------------------------
 

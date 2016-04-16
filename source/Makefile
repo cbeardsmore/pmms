@@ -7,9 +7,9 @@
 
 # MAKE VARIABLES
 EXEC1 = multiProcess
-OBJ1 = multiProcess.o matrix.o
-EXEC2 = multiThread
-OBJ2 = multiThread.o
+OBJ1 = multiProcess.o matrix.o fileIO.o
+#EXEC2 = multiThread
+#OBJ2 = multiThread.o
 
 CFLAGS = -Wall -Wextra -Werror -std=c99
 CC = gcc
@@ -19,11 +19,16 @@ CC = gcc
 $(EXEC1) : $(OBJ1)
 	$(CC) $(OBJ1) -o $(EXEC1)	
 
-multiProcess.o : multiProcess.c multiProcess.h matrix.h
+multiProcess.o : multiProcess.c multiProcess.h matrix.h fileIO.h
 	$(CC) -c multiProcess.c $(CFLAGS)
 
 matrix.o : matrix.c matrix.h
 	$(CC) -c matrix.c $(CFLAGS)	
+
+fileIO.o : fileIO.c fileIO.h matrix.h
+	$(CC) -c fileIO.c $(CFLAGS)			
+
+
 
 clean:
 	rm -f $(EXEC1) $(OBJ1) $(EXEC2) $(OBJ2)

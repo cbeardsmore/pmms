@@ -1,18 +1,16 @@
  /***************************************************************************
- *	FILE: multiProcess.h							   
+ *	FILE: fileIO.h							   
  *	AUTHOR: Connor Beardsmore - 15504319								  
  *	UNIT: UCP Assignment. S2 - 2015													   
- *	PURPOSE: Header file for multiProcess.c
+ *	PURPOSE: Header file for fileIO.c
  *	LAST MOD: 16/04/16	
- *  REQUIRES: matrix.h, fileIO.h		   
+ *  REQUIRES: matrix.h   
  ***************************************************************************/
 
 #include "matrix.h"
-#include "fileIO.h"
 
 //--------------------------------------------------------------------------
 
-void outputTotals(int);
+int readFile( char*, Matrix*);
 
-//--------------------------------------------------------------------------
- 
+//-------------------------------------------------------------------------- 
