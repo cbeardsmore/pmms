@@ -1,13 +1,13 @@
 #
 # Makefile For Matrix Multiplication w. Multi-process and Multi-threading
 # OS200 Assignment
-# Last Modified: 09/04/16
+# Last Modified: 16/04/16
 # Connor Beardsmore - 15504319
 #
 
 # MAKE VARIABLES
 EXEC1 = multiProcess
-OBJ1 = multiProcess.o
+OBJ1 = multiProcess.o matrix.o
 EXEC2 = multiThread
 OBJ2 = multiThread.o
 
@@ -19,8 +19,11 @@ CC = gcc
 $(EXEC1) : $(OBJ1)
 	$(CC) $(OBJ1) -o $(EXEC1)	
 
-multiProcess.o : multiProcess.c multiProcess.h
+multiProcess.o : multiProcess.c multiProcess.h matrix.h
 	$(CC) -c multiProcess.c $(CFLAGS)
+
+matrix.o : matrix.c matrix.h
+	$(CC) -c matrix.c $(CFLAGS)	
 
 clean:
 	rm -f $(EXEC1) $(OBJ1) $(EXEC2) $(OBJ2)

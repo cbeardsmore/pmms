@@ -3,13 +3,14 @@
  *	AUTHOR: Connor Beardsmore - 15504319								  
  *	UNIT: OS200 Assignment S1 - 2016 														   
  *	PURPOSE: 
- *	LAST MOD: 09/04/15	
- *  REQUIRES: stdio.h, stdlib.h, multiProcess.h					   
+ *	LAST MOD: 16/04/16	
+ *  REQUIRES: stdio.h, stdlib.h, multiProcess.h, matrix.h				   
  ***************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "multiProcess.h"
+#include "matrix.h" 
 
 //--------------------------------------------------------------------------
 
@@ -19,30 +20,32 @@ int main(int argc, char* argv[])
 	if ( argc != 6 )
 	{
 		printf( "Usage: ./multiProcess [Matrix A File] [Matrix B File] [M] [N] [K]\n" );
+		printf( "Please see README for detailed steps on how to run!\n" );
 		return 1;
 	}	
 
 	// RENAME ARG'S FOR BETTER CODE READABILITY
-	char* matrixAFile = argv[1];
-	char* matrixBFile = argv[2];
+	//char* matrixAFile = argv[1];
+	//char* matrixBFile = argv[2];
+	int firstRows = atoi( argv[3] );
+	int firstCols = atoi( argv[4] );
+	int secondRows = atoi( argv[4] );
+	int secondCols = atoi( argv[5] );
+	int productRows = atoi( argv[3] );
+	int productCols = atoi( argv[5] );					
 
 	// INITIALISE THREE MATRIX STRUCT
-	Matrix* aa = (Matrix*)calloc( 1, sizeof(Matrix) );
-	Matrix* bb = (Matrix*)calloc( 1, sizeof(Matrix) );
-	Matrix* cc = (Matrix*)calloc( 1, sizeof(Matrix) );
+	Matrix* first = makeMatrix( firstRows, firstCols );
+	Matrix* second = makeMatrix( secondRows, secondCols );
+	Matrix* product = makeMatrix( productRows, productCols );	
 
-	// SET COLUMN AND ROW VALUES FOR MATRICES
-	aa->rows = atoi( argv[3] );
-	aa->columns = atoi( argv[4] ); 
-	bb->rows = atoi( argv[4] ); 
-	bb->columns = atoi( argv[5] ); 
+	printMatrix(first);
+	printMatrix(second);
+	printMatrix(product);
 
-	// READ DATA FROM FILE INTO MATRIXS
-
-
-
-	// OUTPUT FINAL CALCULATIONS
-	outputTotals(total);
+	freeMatrix(first);
+	freeMatrix(second);
+	freeMatrix(product);
 
 	return 0;
 }
