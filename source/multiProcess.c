@@ -23,18 +23,19 @@ int main(int argc, char* argv[])
 	}	
 
 	// RENAME ARG'S FOR BETTER CODE READABILITY
-	char* matrixA = argv[1];
-	char* matrixB = argv[2];
-	int aRow = atoi( argv[3] ); 
-	int aCol = atoi( argv[4] ); 
-	int bRow = atoi( argv[4] );  
-	int bCol = atoi( argv[5] ); 
+	char* matrixAFile = argv[1];
+	char* matrixBFile = argv[2];
 
-	// TOTAL VARIABLES
-	int total = 0;
+	// INITIALISE THREE MATRIX STRUCT
+	Matrix* aa = (Matrix*)calloc( 1, sizeof(Matrix) );
+	Matrix* bb = (Matrix*)calloc( 1, sizeof(Matrix) );
+	Matrix* cc = (Matrix*)calloc( 1, sizeof(Matrix) );
 
-	// INITIALISE MATRIX STRUCTS
-
+	// SET COLUMN AND ROW VALUES FOR MATRICES
+	aa->rows = atoi( argv[3] );
+	aa->columns = atoi( argv[4] ); 
+	bb->rows = atoi( argv[4] ); 
+	bb->columns = atoi( argv[5] ); 
 
 	// READ DATA FROM FILE INTO MATRIXS
 
