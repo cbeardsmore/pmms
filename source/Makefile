@@ -11,7 +11,7 @@ OBJ1 = multiProcess.o matrix.o
 EXEC2 = multiThread
 OBJ2 = multiThread.o
 
-CFLAGS = -Wall -Wextra -Werror -std=c99 -g
+CFLAGS = -Wall -Wextra -Werror -std=c99
 CC = gcc
 
 # RULES + DEPENDENCIES
