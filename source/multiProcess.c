@@ -9,6 +9,7 @@
 
 #include "multiProcess.h" 
 #define MAX_FILE_LENGTH 40
+#define SUBTOTAL_EMPTY -1
 
 //--------------------------------------------------------------------------
 
@@ -86,10 +87,16 @@ int main(int argc, char* argv[])
 	ftruncate( subtotalFD, sizeof(Subtotal) );
 	Subtotal* subtotal = (Subtotal*)mmap( 0, sizeof(Subtotal), PROT_WRITE, MAP_SHARED, subtotalFD, 0 );
 
+	// INITIAL SUBTOTAL FIELDS TO "EMPTY"
+	subtotal->value = SUBTOTAL_EMPTY;
+	subtotal->childPID = SUBTOTAL_EMPTY;
+
+	// SET UP THE SEMAPHORES
+	
 
 	// CREATE 10 CHILDREN PROCESSES
 	int pid = -1;
-	for ( int ii = 0; ii < 10; ii++ )
+	for ( int ii = 0; ii < productRows; ii++ )
 	{
 		if ( pid != 0 )
 		{
@@ -97,7 +104,10 @@ int main(int argc, char* argv[])
 		}	
 	}	
 
+	// CONSUMER. PARENT WAITS FOR SUBTOTAL TO NOT BE EMPTY
 
+
+	// PRODUCER. CHILD STORES CALCULATION IN SUBTOTAL
 
 
 
@@ -107,6 +117,7 @@ int main(int argc, char* argv[])
 	{	
 		printMatrix(first);
 		printMatrix(second);
+		printMatrix(product);
 		outputTotals(total, subtotal);
 	}
 

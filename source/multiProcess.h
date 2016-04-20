@@ -5,7 +5,7 @@
  *	PURPOSE: Header file for multiProcess.c
  *	LAST MOD: 16/04/16	
  *  REQUIRES: stdio.h, stdlib.h, shm.h, mman.h, string.h, fcntl.h, unistd.h
- *			  matrix.h, fileIO.h		   
+ *			  matrix.h, fileIO.h, semaphore.h		   
  ***************************************************************************/
 
 #pragma once
@@ -17,6 +17,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <semaphore.h>
 
 #include "matrix.h"
 #include "fileIO.h"
@@ -28,6 +29,15 @@ typedef struct
 	int value;
 	int childPID;
 } Subtotal;
+
+//--------------------------------------------------------------------------
+
+typedef struct 
+{
+	sem_t mutex;
+	sem_t full;
+	sem_t empty;
+} Synchron;
 
 //-------------------------------------------------------------------------- 
 
