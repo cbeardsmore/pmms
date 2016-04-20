@@ -41,33 +41,30 @@ int main(int argc, char* argv[])
 	int productCols = atoi( argv[5] );
 	int total = 420;
 
-	// CALCULATE TOTAL SIZE NEEDED FOR 3 MATRICES
+	// CALCULATE TOTAL SIZE NEEDED FOR DATA OF THE 3 MATRICES
 	size_t firstSize = sizeof(int) * ( firstRows * firstCols );
 	size_t secondSize = sizeof(int) * ( secondRows * secondCols );
 	size_t productSize = sizeof(int) * ( productRows * productCols );	
 
-	// CREATE SHARED MEMORY SEGMENTS FOR ALL 3 MATRICES + ELEMENTS
-	int firstFD = shm_open( "first", O_CREAT | O_RDWR, 0666 );
+	// CREATE SHARED MEMORY SEGMENTS FOR ALL MATRICES STRUCT + ELEMENTS
+	int matricesFD = shm_open( "matrices", O_CREAT | O_RDWR, 0666 ); 
 	int firstData = shm_open( "first_elements", O_CREAT | O_RDWR, 0666 );
-	int secondFD = shm_open( "second", O_CREAT | O_RDWR, 0666 );
 	int secondData = shm_open( "second_elements", O_CREAT | O_RDWR, 0666 );
-	int productFD = shm_open( "product", O_CREAT | O_RDWR, 0666 );
 	int productData = shm_open( "product_elements", O_CREAT | O_RDWR, 0666 );
 
 	// TRUNCATE SEGMENTS TO APPRIORIATE SIZES
-	ftruncate( firstFD, sizeof(Matrix) );
+	ftruncate( matricesFD, sizeof(Matrices) );
 	ftruncate( firstData, firstSize );
-	ftruncate( secondFD, sizeof(Matrix) );
 	ftruncate( secondData, secondSize );
-	ftruncate( productFD, sizeof(Matrix) );
 	ftruncate( productData, productSize );
 
-	// MAP MATRIX MEMORY TO ADDRESS SPACE
-	Matrix* first = (Matrix*)mmap( 0, sizeof(Matrix), PROT_WRITE, MAP_SHARED, firstFD, 0 );
-	Matrix* second = (Matrix*)mmap( 0, sizeof(Matrix), PROT_WRITE, MAP_SHARED, secondFD, 0 );
-	Matrix* product = (Matrix*)mmap( 0, sizeof(Matrix), PROT_WRITE, MAP_SHARED, productFD, 0 );
+	// MAP MATRICES STRUCT TO ADDRESS SPACE, ASSIGN TO POINTERS
+	Matrix* first = (Matrix*)mmap( 0, sizeof(Matrices), PROT_WRITE, MAP_SHARED, matricesFD, 0 );
+	Matrix* second = first + sizeof(Matrix);
+	Matrix* product = second + sizeof(Matrix);
 
 	// INITIALISE VARIABLES WITHIN THE MATRICES THEMSELVES
+	// MAP THE ELEMENTS ARRAY IN THE MATRICES TO ADDRESS SPACE
 	first->rows = firstRows;
 	first->cols = firstCols;
 	first->elements = (int*)mmap( 0, firstSize, PROT_WRITE, MAP_SHARED, firstData, 0 );
@@ -92,7 +89,7 @@ int main(int argc, char* argv[])
 	subtotal->childPID = SUBTOTAL_EMPTY;
 
 	// SET UP THE SEMAPHORES
-	
+
 
 	// CREATE 10 CHILDREN PROCESSES
 	int pid = -1;
