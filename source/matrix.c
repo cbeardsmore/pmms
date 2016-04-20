@@ -12,58 +12,23 @@
 #include "matrix.h"
 
 //--------------------------------------------------------------------------
-// FUNCTION: makeMatrix()
-// IMPORT: rows (int), cols (int)
-// EXPORT: newMatrix (Matrix*)
-// PURPOSE: Allocate all memory needed for an int struct and initalize fields
-
-Matrix* makeMatrix(int rows, int cols)
-{
-		Matrix* newMatrix = (Matrix*)malloc( sizeof(Matrix) );
-
-		// SET ROWS AND COLUMN FIELDS
-		newMatrix->rows = rows;
-		newMatrix->cols = cols;
-
-		// ALLOCATE MEMORY FOR ACTUAL ELEMENTS
-		newMatrix->elements = (int**)calloc( rows, sizeof(int*) );
-		for ( int ii = 0; ii < rows; ii++ )
-			newMatrix->elements[ii] = (int*)calloc( cols, sizeof(int) );
-
-
-		return newMatrix;
-}
-//--------------------------------------------------------------------------
-// FUNCTION: freeMatrix()
-// IMPORT: oldMatrix (Matrix*)
-// PURPOSE: Free all memory associated with a matrix struct
-
-void freeMatrix(Matrix* oldMatrix)
-{
-	// FREE EVERY INDIVIDUAL ROW OF THE MATRIX
-	for ( int ii = 0; ii < oldMatrix->rows; ii++ )
-			free( oldMatrix->elements[ii] );
-
-	free( oldMatrix->elements );
-
-	// FREE THE ACTUAL STRUCT
-	free(oldMatrix);
-}
-//--------------------------------------------------------------------------
 // FUNCTION: printMatrix()
 // IMPORT: newMatrix (Matrix*)
 // PURPOSE: Print matrix contents to std out for debugging purposes
 
 void printMatrix(Matrix* newMatrix)
 {
+	// OFFSET TO CALCULATE "ROWS" OF THE 1D ELEMENT ARRAY
+	int offset = 0;
 	printf("\n");
 
 	// ITERATE OVER ENTIRE MATRIX AND PRINT EACH ELEMENT
 	for ( int ii = 0; ii < newMatrix->rows; ii++ )
 	{	
+		offset = ii * newMatrix->cols;
 		for ( int jj = 0; jj < newMatrix->cols; jj++ )
 		{	
-			printf("%d ", newMatrix->elements[ii][jj] );
+			printf("%d ", newMatrix->elements[ offset + jj ] );
 		}
 		printf("\n");	
 	}

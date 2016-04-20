@@ -19,6 +19,7 @@
 int readFile( char* filename, Matrix* matrix )
 {
 	int nRead;
+	int offset = 0;
 
 	// ENSURE FILE OPENED CORRECTLY
 	FILE* f = fopen( filename, "r" );
@@ -29,11 +30,14 @@ int readFile( char* filename, Matrix* matrix )
 		return -1;
 	}
 
-
 	for ( int ii = 0; ii < matrix->rows; ii++ )
+	{	
+		offset = ii * matrix->cols;
 		for ( int jj = 0; jj < matrix->cols; jj++ )
-			nRead = fscanf( f, "%d", &matrix->elements[ii][jj] );
-
+		{	
+			nRead = fscanf( f, "%d", &matrix->elements[offset + jj] );
+		}
+	}
 
 	fclose(f);
 	return 0;

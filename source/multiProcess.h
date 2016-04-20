@@ -4,8 +4,19 @@
  *	UNIT: UCP Assignment. S2 - 2015													   
  *	PURPOSE: Header file for multiProcess.c
  *	LAST MOD: 16/04/16	
- *  REQUIRES: matrix.h, fileIO.h		   
+ *  REQUIRES: stdio.h, stdlib.h, shm.h, mman.h, string.h, fcntl.h, unistd.h
+ *			  matrix.h, fileIO.h		   
  ***************************************************************************/
+
+#pragma once
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/shm.h>
+#include <sys/mman.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "matrix.h"
 #include "fileIO.h"
@@ -20,7 +31,7 @@ typedef struct
 
 //-------------------------------------------------------------------------- 
 
-void outputTotals(int);
+void outputTotals(int, Subtotal*);
 
 //--------------------------------------------------------------------------
  
