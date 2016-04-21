@@ -20,15 +20,7 @@ typedef struct
 
 //--------------------------------------------------------------------------
 
-typedef struct 
-{
-	Matrix first;
-	Matrix second;
-	Matrix third;
-} Matrices;
-
-//--------------------------------------------------------------------------
-
 void printMatrix(Matrix*);
+void printMatrices(Matrix*, Matrix*, Matrix*);
 
 //--------------------------------------------------------------------------

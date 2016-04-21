@@ -34,3 +34,15 @@ void printMatrix(Matrix* newMatrix)
 	}
 }
 //--------------------------------------------------------------------------
+// FUNCTION: printMatrices
+// IMPORT: first (Matrix*), second (Matrix*), product (Matrix*)
+// PURPOSE: Prints the contents of three different Matrices to std out
+
+
+void printMatrices(Matrix* first, Matrix* second, Matrix* third)
+{
+		printMatrix(first);
+		printMatrix(second);
+		printMatrix(third);
+}
+//--------------------------------------------------------------------------
