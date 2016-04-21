@@ -5,7 +5,7 @@
 
 #####Purpose
 
-Implementation of matrix multiplication in C, utilizing either multiple processes /OR/ multiple threads.
+Implementation of matrix multiplication in C, utilizing multiple processes. Shared memory is established via POSIX's shm_open(), and synchronization is ensured via POSIX semaphores.
  
 #####File List
 
