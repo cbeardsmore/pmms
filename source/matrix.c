@@ -43,6 +43,6 @@ void printMatrices(Matrix* first, Matrix* second, Matrix* third)
 {
 		printMatrix(first);
 		printMatrix(second);
-		printMatrix(third);
+		printMatrix(third);	
 }
 //--------------------------------------------------------------------------

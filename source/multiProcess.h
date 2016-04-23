@@ -29,6 +29,7 @@ typedef struct
 {
 	int value;
 	int childPID;
+	int rowNumber;
 } Subtotal;
 
 //--------------------------------------------------------------------------
@@ -38,13 +39,12 @@ typedef struct
 	sem_t mutex;
 	sem_t full;
 	sem_t empty;
-	int rowNumber;
 } Synchron;
 
 //-------------------------------------------------------------------------- 
 
 void producer( Synchron*, Subtotal*, Matrix*, Matrix*, Matrix*);
-void consumer(Synchron*, Subtotal*, int*);
+void consumer(Synchron*, Subtotal*, int*, int);
 void destroyLocks(Synchron*);
 void createLocks(Synchron*);
 
