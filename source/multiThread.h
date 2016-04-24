@@ -1,11 +1,11 @@
  /***************************************************************************
- *	FILE: multiProcess.h							   
+ *	FILE: multiThread.h												   
  *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: UCP Assignment. S2 - 2015													   
- *	PURPOSE: Header file for multiProcess.c
- *	LAST MOD: 16/04/16	
+ *	UNIT: OS200 Assignment S1 - 2016 														   
+ *	PURPOSE: Header file for multiThread.c
+ *	LAST MOD: 24/04/16	
  *  REQUIRES: stdio.h, stdlib.h, shm.h, mman.h, string.h, fcntl.h, unistd.h
- *			  matrix.h, fileIO.h, semaphore.h		   
+ *			  matrix.h, fileIO.h, semaphore.			   
  ***************************************************************************/
 
 #pragma once
@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <pthread.h>
 
 #include "matrix.h"
 #include "fileIO.h"
@@ -38,12 +39,12 @@ typedef struct
 
 typedef struct 
 {
-	sem_t mutex;
-	sem_t full;
-	sem_t empty;
+	pthread_mutex_t mutex;
+	pthread_cond_t full;
+	pthread_cond_t empty;
 } Synchron;
 
-//--------------------------------------------------------------------------- 
+//---------------------------------------------------------------------------
 
 void producer( Synchron*, Subtotal*, Matrix*, Matrix*, Matrix*);
 void consumer(Synchron*, Subtotal*, int*, int);
@@ -51,4 +52,3 @@ void destroyLocks(Synchron*);
 void createLocks(Synchron*);
 
 //---------------------------------------------------------------------------
- 

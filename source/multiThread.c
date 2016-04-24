@@ -1,13 +1,13 @@
  /***************************************************************************
- *	FILE: multiProcess.c											   
+ *	FILE: multiThread.c										   
  *	AUTHOR: Connor Beardsmore - 15504319								  
  *	UNIT: OS200 Assignment S1 - 2016 														   
- *	PURPOSE: Matrix multiplication using multiprocessing and shared memory
- *	LAST MOD: 16/04/16	
- *  REQUIRES: multiProcess.h				   
+ *	PURPOSE: Matrix multiplication using multithreading and POSIX mutexs
+ *	LAST MOD: 24/04/16	
+ *  REQUIRES: multiThread.h				   
  ***************************************************************************/
 
-#include "multiProcess.h" 
+#include "multiThread.h" 
 #define MAX_FILE_LENGTH 40
 #define SUBTOTAL_EMPTY 0
 
@@ -49,15 +49,7 @@ int main(int argc, char* argv[])
 	size_t secondSize = sizeof(Matrix) + sizeof(int) * ( secondRows * secondCols );
 	size_t productSize = sizeof(Matrix) + sizeof(int) * ( productRows * productCols );
 
-	// CREATE SHARED MEMORY SEGMENTS FOR THE MATRICES AND THEIR DATA ELEMENTS
-	int matrixAFD = shm_open( "matrixA", O_CREAT | O_RDWR, 0666 ); 
-	int matrixBFD = shm_open( "matrixB", O_CREAT | O_RDWR, 0666 ); 
-	int matrixCFD = shm_open( "matriXC", O_CREAT | O_RDWR, 0666 ); 
 
-	// TRUNCATE SEGMENTS TO APPRIORIATE SIZES
-	ftruncate( matrixAFD, firstSize );
-	ftruncate( matrixBFD, secondSize );
-	ftruncate( matrixCFD, productSize );
 
 	// MAP MATRICES STRUCT TO ADDRESS SPACE, ASSIGN TO POINTERS
 	Matrix* first = (Matrix*)mmap( 0, firstSize, PROT_WRITE, MAP_SHARED, matrixAFD, 0 );
@@ -80,21 +72,16 @@ int main(int argc, char* argv[])
 	readFile( fileA, first );
 	readFile( fileB, second );
 
-	// SET UP SHARED MEMORY FOR SUBTOTAL
-	int subtotalFD = shm_open( "subtotal", O_CREAT | O_RDWR, 0666 );
-	ftruncate( subtotalFD, sizeof(Subtotal) );
-	Subtotal* subtotal = (Subtotal*)mmap( 0, sizeof(Subtotal), PROT_WRITE, MAP_SHARED, subtotalFD, 0 );
+	Synchron* locks;
+	Subtotal* subtotal = (Subtotal*)malloc( sizeof(Subtotal) );
 
 	// INITIAL SUBTOTAL FIELDS TO "EMPTY"
 	subtotal->value = SUBTOTAL_EMPTY;
 	subtotal->childPID = SUBTOTAL_EMPTY;
 	subtotal->rowNumber = 0;
 
-	// SET UP THE SEMAPHORE SHARED MEMORY
-	int locksFD = shm_open( "synchronization", O_CREAT | O_RDWR, 0666 );
-	ftruncate( locksFD, sizeof(Synchron) );
-	Synchron* locks = (Synchron*)mmap( 0, sizeof(Synchron), PROT_WRITE, MAP_SHARED, locksFD, 0 );
-	
+
+
 	// INITIALISE THE SEMAPHORES
 	createLocks(locks);
 
@@ -158,42 +145,43 @@ int main(int argc, char* argv[])
 
 void producer( Synchron* locks, Subtotal* subtotal, Matrix* first, Matrix* second, Matrix* product)
 {
-	int value;
-	int rowNumber;
-	int total = 0;
-
-	sem_wait(&locks->mutex);
-		rowNumber = subtotal->rowNumber;
-		subtotal->rowNumber += 1;
-	sem_post(&locks->mutex);
-
-	int offsetA = rowNumber * first->cols;
-	int offsetC = rowNumber * product->cols;
+						int value;
+						int rowNumber;
+						int total = 0;
 
 
-	for ( int ii = 0; ii < product->cols; ii++ )
+	pthread_mutex_lock( &locks->mutex );
+	while ( buffer != 0 )
 	{
-		value = 0;
-
-		for ( int jj = 0; jj < first->cols; jj++ )
-		{
-			value += first->elements[offsetA + jj] * second->elements[jj * second->cols + ii];
-		}	
-		
-		product->elements[offsetC + ii] = value;
+		pthread_cond_wait( &locks->empty, &locks->mutex );
 	}	
+	buffer = 1;
+	pthread_cond_signal( &locks->full );
+	pthread_mutex_unlock( &locks->mutex );
 
-	for ( int kk = 0; kk < product->cols; kk++ )
-	{
-		total += product->elements[offsetC + kk];
-	}
 
-	sem_wait(&locks->empty);	
-		sem_wait(&locks->mutex);
-			subtotal->childPID = getpid();
-			subtotal->value = total;
-		sem_post(&locks->mutex);
-	sem_post(&locks->full);
+
+
+
+
+					for ( int ii = 0; ii < product->cols; ii++ )
+					{
+						value = 0;
+
+						for ( int jj = 0; jj < first->cols; jj++ )
+						{
+							value += first->elements[offsetA + jj] * second->elements[jj * second->cols + ii];
+						}	
+						
+						product->elements[offsetC + ii] = value;
+					}	
+
+					for ( int kk = 0; kk < product->cols; kk++ )
+					{
+						total += product->elements[offsetC + kk];
+					}
+
+	pthread_exit(0);
 
 }
 
@@ -202,45 +190,52 @@ void producer( Synchron* locks, Subtotal* subtotal, Matrix* first, Matrix* secon
 // IMPORT: locks (Synchron*), subtotal (Subtotal*), total (int*)
 // PURPOSE: Parent process consumes the subtotal + childPID create by children.
 
-void consumer(Synchron* locks, Subtotal* subtotal, int* total, int productRows)
+void* consumer(void* ptr)
 {
-	for ( int ii = 0; ii < productRows; ii++ )
+	for ( int ii = 0; ii < ITEMS; ii++ )
 	{
-		sem_wait(&locks->full);
-			sem_wait(&locks->mutex);
+		pthread_mutex_lock( &locks->mutex );
+		while ( buffer == 0 )
+		{
+			pthread_cond_wait( &locks->full, &locks->mutex );
+		}	
+		buffer = 0;
 
 				printf( "subtotal: %d, childPID: %d\n", subtotal->value, subtotal->childPID );
 				*total += subtotal->value;
 				subtotal->value = 0;
 				subtotal->childPID = 0;
 
-			sem_post(&locks->mutex);
-		sem_post(&locks->empty);				
-	}
+		pthread_cond_signal( &locks->empty );
+		pthread_mutex_unlock( &locks->mutex );
+	}	
+
+	pthread_exit(0);
 }
 
 //---------------------------------------------------------------------------
 // FUNCTION: createLocks
 // IMPORT: locks (Synchron*)
-// PURPOSE: Create the 3 POSIX semaphores required for locks.
+// PURPOSE: Initialise the Mutex and Conditions used for locks
 
 void createLocks(Synchron* locks)
 {
-	sem_init( &locks->mutex, -1, 1 );
-	sem_init( &locks->full, -1, 0 );
-	sem_init( &locks->empty, -1, 1 );
+	pthread_mutex_init( &locks->mutex, NULL );
+	pthread_cond_init( &locks->full, NULL );
+	pthread_cond_init( &locks->empty, NULL );
 }
 
 //---------------------------------------------------------------------------
 // FUNCTION: destroyLocks
 // IMPORT: locks (Synchron*)
-// PURPOSE: Destroy the 3 POSIX semaphores created for locks.
+// PURPOSE: Destroy the Mutex and Conditions used for locks
+
 
 void destroyLocks(Synchron* locks)
 {
-	sem_destroy( &locks->mutex );
-	sem_destroy( &locks->full );
-	sem_destroy( &locks->empty );	
+	pthread_mutex_destroy();	
+	pthread_cond_destroy( &locks->full );
+	pthread_cond_destroy( &locks->empty );	
 }
 
 //---------------------------------------------------------------------------
