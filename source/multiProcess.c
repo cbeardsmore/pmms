@@ -99,13 +99,31 @@ int main(int argc, char* argv[])
 	createLocks(locks);
 
 	// CREATE 10 CHILDREN PROCESSES
+	// DOUBLE FORKING AVOIDS ZOMBIE PROCESSES
 	int pid = -1;
+	int parent_pid = getpid();
+	int status;
 	for ( int ii = 0; ii < productRows; ii++ )
 	{
-		if ( pid != 0 )
-		{
+		if ( parent_pid == getpid() )	//only parent forks
+		{	
 			pid = fork();
-		}	
+			if ( pid == 0 )		//child
+			{
+				if ( 0 == fork() ) //grandchild
+				{
+					sleep(1);	//let child die
+				}	
+				else 			// if your not grandchild, and pid==0, you must be child. die
+				{
+					exit(0);
+				}
+			}
+			else 		//parent calls wait
+			{
+				waitpid(pid, &status, 0);
+			}	
+		}
 	}	
 
 	// CONSUMER. PARENT WAITS FOR SUBTOTAL TO NOT BE EMPTY
@@ -120,6 +138,8 @@ int main(int argc, char* argv[])
 		producer(locks, subtotal, first, second, product);
 		_exit(0);
 	}	
+
+	sleep(30);
 
 	// PARENT DESTORYS ALL SEMAPHORES
 	destroyLocks(locks);

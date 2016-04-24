@@ -11,13 +11,13 @@ OBJ1 = multiProcess.o matrix.o fileIO.o
 #EXEC2 = multiThread
 #OBJ2 = multiThread.o
 
-CFLAGS = -Wall -Wextra -std=c99 -lrt -D _XOPEN_SOURCE=500
+CFLAGS = -Wall -Wextra -std=c99 -lrt -pthread -D _XOPEN_SOURCE=500
 CC = gcc
 
 # RULES + DEPENDENCIES
 
 $(EXEC1) : $(OBJ1)
-	$(CC) $(CFLAGS) $(OBJ1) -o $(EXEC1)	
+	$(CC) $(OBJ1) -o $(EXEC1) $(CFLAGS)
 
 multiProcess.o : multiProcess.c multiProcess.h matrix.h fileIO.h
 	$(CC) -c multiProcess.c $(CFLAGS)
