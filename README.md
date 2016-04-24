@@ -5,19 +5,22 @@
 
 #####Purpose
 
-Implementation of matrix multiplication in C, utilizing multiple processes. Shared memory is established via POSIX's shm_open(), and synchronization is ensured via POSIX semaphores.
+Implementation of a matrix multiplication calculator in C. The data from the two matrices to mutiply are read from file. The calculator outputs the subtotal of every row, plus the grand total of all the rows. Part A utilizes Multiprocessing and Part B utilizes Multithreading.
+Shared memory is established via POSIX's shm_open(). Synchronization is ensured via the use of POSIX semaphores, mutexes and conditions.
  
 #####File List
 
 	.c FILES
 	--------
 	multiProcess.c
+	multiThread.c
 	matrix.c
 	fileIO.c
 
 	.h FILES
 	--------
 	multiProcess.h
+	multiThread.c
 	matrix.h
 	fileIO.h
 
@@ -25,15 +28,22 @@ Implementation of matrix multiplication in C, utilizing multiple processes. Shar
 	-----
 	Makefile
 	README.md
+	/testFiles
 	
 
-#####Instructions to Run
+#####Instructions to Compile + Run
 
-*For Multiprocess:*
+*To Compile, choose one of the following:*
+
+	make all
+	make multiProcess
+	make multiThread
+
+*To Run Multiprocess:*
 
 	./multiProcess [file A] [file B] [M] [N] [K]
 
-*For Multithreads:*  
+*To Run Multithreads:*  
 
 	./multiThread [file A] [file B] [M] [N] [K]
 	
@@ -46,3 +56,5 @@ Implementation of matrix multiplication in C, utilizing multiple processes. Shar
 - K = Matrix B Columns	
 
 #####References
+
+Silberschatz, Abraham, Peter B. Galvin, and Greg Gagne. *Operating System Concepts*. 9th ed. Reading, MA: Addison-Wesley, 1994.
