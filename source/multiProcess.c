@@ -60,9 +60,9 @@ int main(int argc, char* argv[])
 	ftruncate( matrixCFD, productSize );
 
 	// MAP MATRICES STRUCT TO ADDRESS SPACE, ASSIGN TO POINTERS
-	Matrix* first = (Matrix*)mmap( 0, firstSize, PROT_WRITE, MAP_SHARED, matrixAFD, 0 );
-	Matrix* second = (Matrix*)mmap( 0, secondSize, PROT_WRITE, MAP_SHARED, matrixBFD, 0 );
-	Matrix* product = (Matrix*)mmap( 0, productSize, PROT_WRITE, MAP_SHARED, matrixCFD, 0 );
+	Matrix* first = (Matrix*)mmap( 0, firstSize, PROT_READ | PROT_WRITE, MAP_SHARED, matrixAFD, 0 );
+	Matrix* second = (Matrix*)mmap( 0, secondSize, PROT_READ | PROT_WRITE, MAP_SHARED, matrixBFD, 0 );
+	Matrix* product = (Matrix*)mmap( 0, productSize, PROT_READ | PROT_WRITE, MAP_SHARED, matrixCFD, 0 );
 
 	// INITIALISE VARIABLES WITHIN THE MATRICES THEMSELVES
 	// MAP THE ELEMENTS ARRAY IN THE MATRICES TO ADDRESS SPACE
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 	// SET UP SHARED MEMORY FOR SUBTOTAL
 	int subtotalFD = shm_open( "subtotal", O_CREAT | O_RDWR, 0666 );
 	ftruncate( subtotalFD, sizeof(Subtotal) );
-	Subtotal* subtotal = (Subtotal*)mmap( 0, sizeof(Subtotal), PROT_WRITE, MAP_SHARED, subtotalFD, 0 );
+	Subtotal* subtotal = (Subtotal*)mmap( 0, sizeof(Subtotal), PROT_READ | PROT_WRITE, MAP_SHARED, subtotalFD, 0 );
 
 	// INITIAL SUBTOTAL FIELDS TO "EMPTY"
 	subtotal->value = SUBTOTAL_EMPTY;
@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 	// SET UP THE SEMAPHORE SHARED MEMORY
 	int locksFD = shm_open( "synchronization", O_CREAT | O_RDWR, 0666 );
 	ftruncate( locksFD, sizeof(Synchron) );
-	Synchron* locks = (Synchron*)mmap( 0, sizeof(Synchron), PROT_WRITE, MAP_SHARED, locksFD, 0 );
+	Synchron* locks = (Synchron*)mmap( 0, sizeof(Synchron), PROT_READ | PROT_WRITE, MAP_SHARED, locksFD, 0 );
 	
 	// INITIALISE THE SEMAPHORES
 	createLocks(locks);
@@ -129,24 +129,27 @@ int main(int argc, char* argv[])
 		}
  	}	
 
+
 	// CONSUMER. PARENT WAITS FOR SUBTOTAL TO NOT BE EMPTY
 	if ( pid != 0 )
 	{
+		printf("elementspointer=%p\n", first->elements );		
 		consumer(locks, subtotal, &total, productRows);
 	}	
 
 	// PRODUCER. CHILD STORES CALCULATION IN SUBTOTAL
 	if ( pid == 0 )
-	{
+	{		
 		producer(locks, subtotal, first, second, product);
 		_exit(0);
 	}	
+
 
 	// PARENT DESTORYS ALL SEMAPHORES
 	destroyLocks(locks);
 
 	// PRINT CONTENT OF ALL 3 MATRICES
-	printMatrices( first, second, product );
+	//printMatrices( first, second, product );
 	printf("total: %d\n", total);
 
 	return 0;
@@ -166,18 +169,17 @@ void producer( Synchron* locks, Subtotal* subtotal, Matrix* first, Matrix* secon
 		rowNumber = subtotal->rowNumber;
 		subtotal->rowNumber += 1;
 	sem_post(&locks->mutex);
-
 	int offsetA = rowNumber * first->cols;
 	int offsetC = rowNumber * product->cols;
 
 
 	for ( int ii = 0; ii < product->cols; ii++ )
-	{
+	{		
 		value = 0;
 
 		for ( int jj = 0; jj < first->cols; jj++ )
-		{
-			value += first->elements[offsetA + jj] * second->elements[jj * second->cols + ii];
+		{			
+			value += first->elements[offsetA + jj] * second->elements[jj * second->cols + ii];		
 		}	
 		
 		product->elements[offsetC + ii] = value;
@@ -188,7 +190,7 @@ void producer( Synchron* locks, Subtotal* subtotal, Matrix* first, Matrix* secon
 		total += product->elements[offsetC + kk];
 	}
 
-	sem_wait(&locks->empty);	
+	sem_wait(&locks->empty);		
 		sem_wait(&locks->mutex);
 			subtotal->childPID = getpid();
 			subtotal->value = total;
@@ -208,7 +210,7 @@ void consumer(Synchron* locks, Subtotal* subtotal, int* total, int productRows)
 	{
 		sem_wait(&locks->full);
 			sem_wait(&locks->mutex);
-
+		
 				printf( "subtotal: %d, childPID: %d\n", subtotal->value, subtotal->childPID );
 				*total += subtotal->value;
 				subtotal->value = 0;

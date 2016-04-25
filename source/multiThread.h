@@ -23,7 +23,6 @@
 #include <sys/wait.h>
 #include <pthread.h>
 
-#include "matrix.h"
 #include "fileIO.h"
 
 //---------------------------------------------------------------------------
@@ -31,7 +30,7 @@
 typedef struct 
 {
 	int value;
-	int childPID;
+	int childTID;
 	int rowNumber;
 } Subtotal;
 
@@ -46,9 +45,23 @@ typedef struct
 
 //---------------------------------------------------------------------------
 
-void producer( Synchron*, Subtotal*, Matrix*, Matrix*, Matrix*);
-void consumer(Synchron*, Subtotal*, int*, int);
-void destroyLocks(Synchron*);
-void createLocks(Synchron*);
+Subtotal subtotal;
+int grandTotal;
+Synchron locks;
+int* first;
+int* second;
+int* product;
+int M;
+int N;
+int K;
+
+//---------------------------------------------------------------------------
+
+void* producer(void* ptr);
+void* consumer(void* ptr);
+void destroyLocks();
+void createLocks();
+void printMatrix(int*, int, int);
+void printMatrices(int*, int*, int*, int, int, int);
 
 //---------------------------------------------------------------------------

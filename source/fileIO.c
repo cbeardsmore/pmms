@@ -12,11 +12,11 @@
 
 //--------------------------------------------------------------------------
 // FUNCTION: readFile()
-// IMPORT: filename (char*), matrix (Matrix*)
+// IMPORT: filename (char*), matrix (int*)
 // EXPORT: status (int)
 // PURPOSE: Read matrix from file and store its elements in a Matrix struct 
 
-int readFile( char* filename, Matrix* matrix )
+int readFile( char* filename, int* matrix, int rows, int cols)
 {
 	int nRead;
 	int offset = 0;
@@ -30,12 +30,12 @@ int readFile( char* filename, Matrix* matrix )
 		return -1;
 	}
 
-	for ( int ii = 0; ii < matrix->rows; ii++ )
+	for ( int ii = 0; ii < rows; ii++ )
 	{	
-		offset = ii * matrix->cols;
-		for ( int jj = 0; jj < matrix->cols; jj++ )
+		offset = ii * cols;
+		for ( int jj = 0; jj < cols; jj++ )
 		{	
-			nRead = fscanf( f, "%d", &matrix->elements[offset + jj] );
+			nRead = fscanf( f, "%d", ( &matrix[offset + jj] ) );
 		}
 	}
 
