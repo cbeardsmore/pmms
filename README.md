@@ -12,16 +12,14 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 
 	.c FILES
 	--------
-	multiProcess.c
-	multiThread.c
-	matrix.c
+	pmms.c
+	tmms.c
 	fileIO.c
 
 	.h FILES
 	--------
-	multiProcess.h
-	multiThread.c
-	matrix.h
+	pmms.h
+	tmms.c
 	fileIO.h
 
 	OTHER
@@ -36,16 +34,16 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 *To Compile, choose one of the following:*
 
 	make all
-	make multiProcess
-	make multiThread
+	make pmms
+	make tmms
 
 *To Run Multiprocess:*
 
-	./multiProcess [file A] [file B] [M] [N] [K]
+	./pmms [file A] [file B] [M] [N] [K]
 
 *To Run Multithreads:*  
 
-	./multiThread [file A] [file B] [M] [N] [K]
+	./tmms [file A] [file B] [M] [N] [K]
 	
 *where:*  
   
