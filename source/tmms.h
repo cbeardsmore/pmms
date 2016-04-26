@@ -1,40 +1,38 @@
  /***************************************************************************
- *	FILE: multiThread.h												   
+ *	FILE: tmms.h												   
  *	AUTHOR: Connor Beardsmore - 15504319								  
  *	UNIT: OS200 Assignment S1 - 2016 														   
- *	PURPOSE: Header file for multiThread.c
+ *	PURPOSE: Header file for tmms.c
  *	LAST MOD: 24/04/16	
- *  REQUIRES: stdio.h, stdlib.h, shm.h, mman.h, string.h, fcntl.h, unistd.h
- *			  matrix.h, fileIO.h, semaphore.			   
+ *  REQUIRES: stdlib.h, pthread.h, fileIO.h			   
  ***************************************************************************/
 
 #pragma once
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <sys/shm.h>
-#include <sys/mman.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <semaphore.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <pthread.h>
-
 #include "fileIO.h"
 
 //---------------------------------------------------------------------------
+// CONSTANTS
+
+#define SUBTOTAL_EMPTY 0
+
+//---------------------------------------------------------------------------
+// STRUCT: Stores the value of subtotal and the ID of the thread that 
+//		   created it. Also stores row number that the thread calculated.
 
 typedef struct 
 {
 	int value;
-	int childTID;
+	int threadID;
 	int rowNumber;
 } Subtotal;
 
 //---------------------------------------------------------------------------
+// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex 
+//         provides mutual exclusion to data. Full and empty are conditions
+//         that the producer and consumer look to meet.
 
 typedef struct 
 {
@@ -44,6 +42,7 @@ typedef struct
 } Synchron;
 
 //---------------------------------------------------------------------------
+// GLOBAL VARIABLES FOR USE IN MULTITHREADS
 
 Subtotal subtotal;
 int grandTotal;
@@ -56,6 +55,7 @@ int N;
 int K;
 
 //---------------------------------------------------------------------------
+// FUNCTION DECLARATIONS
 
 void* producer(void* ptr);
 void* consumer(void* ptr);

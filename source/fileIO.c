@@ -1,34 +1,33 @@
  /***************************************************************************
  *	FILE: fileIO.c							   
  *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: UCP Assignment. S2 - 2015													   
+ *	UNIT: OS200 Assignment S1 - 2016 												   
  *	PURPOSE: Perform reading of matrix elements from a file
  *	LAST MOD: 16/04/16	
- *  REQUIRES: stdio.h, fileIO.h	   
+ *  REQUIRES: fileIO.h	   
  ***************************************************************************/
 
-#include <stdio.h>
 #include "fileIO.h"
 
 //--------------------------------------------------------------------------
 // FUNCTION: readFile()
-// IMPORT: filename (char*), matrix (int*)
+// IMPORT: filename (char*), matrix (int*), rows (int), cols (int)
 // EXPORT: status (int)
-// PURPOSE: Read matrix from file and store its elements in a Matrix struct 
+// PURPOSE: Read matrix from file and store its elements in an int array
 
 int readFile( char* filename, int* matrix, int rows, int cols)
 {
 	int nRead;
 	int offset = 0;
 
-	// ENSURE FILE OPENED CORRECTLY
+	// OPEN FILE AND CONFIRM NO ERRORS OCCURRED
 	FILE* f = fopen( filename, "r" );
-
 	if ( f == NULL )
 	{
 		perror( "ERROR opening file!\n" );
 		return -1;
 	}
+
 
 	for ( int ii = 0; ii < rows; ii++ )
 	{	

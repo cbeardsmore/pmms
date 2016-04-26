@@ -1,15 +1,17 @@
  /***************************************************************************
  *	FILE: fileIO.h							   
  *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: UCP Assignment. S2 - 2015													   
+ *	UNIT: OS200 Assignment S1 - 2016 												   
  *	PURPOSE: Header file for fileIO.c
- *	LAST MOD: 16/04/16	
- *  REQUIRES: matrix.h   
+ *	LAST MOD: 27/04/16	
+ *  REQUIRES: stdio.h
  ***************************************************************************/
 
 #pragma once
+#include <stdio.h>
 
 //--------------------------------------------------------------------------
+// FUNCTION DECLARATIONS
 
 int readFile( char*, int*, int, int);
 

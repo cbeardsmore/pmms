@@ -1,31 +1,33 @@
  /***************************************************************************
- *	FILE: multiProcess.h							   
+ *	FILE: pmms.h							   
  *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: UCP Assignment. S2 - 2015													   
- *	PURPOSE: Header file for multiProcess.c
- *	LAST MOD: 16/04/16	
- *  REQUIRES: stdio.h, stdlib.h, shm.h, mman.h, string.h, fcntl.h, unistd.h
- *			  matrix.h, fileIO.h, semaphore.h		   
+ *	UNIT: OS200 Assignment S1 - 2016 												   
+ *	PURPOSE: Header file for pmms.c
+ *	LAST MOD: 26/04/16	
+ *  REQUIRES: stdio.h, stdlib.h, unistd.h, fcntl.h, semaphore.h, mman.h
+ *            stat.h, wait.h, fileIO.h		   
  ***************************************************************************/
 
 #pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/shm.h>
-#include <sys/mman.h>
-#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <semaphore.h>
+#include <sys/mman.h> 
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <sys/wait.h>
-
-#include "matrix.h"
 #include "fileIO.h"
 
 //---------------------------------------------------------------------------
+// CONSTANTS
+
+#define SUBTOTAL_EMPTY 0
+
+//---------------------------------------------------------------------------
+// STRUCT: Stores the value of subtotal and the ID of the child that 
+//		   created it. Also stores row number that the child calculated.
 
 typedef struct 
 {
@@ -35,6 +37,9 @@ typedef struct
 } Subtotal;
 
 //---------------------------------------------------------------------------
+// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex 
+//         provides mutual exclusion to data. Full and empty are semaphores
+//         to signal actions from the producer and consumer.
 
 typedef struct 
 {
@@ -44,8 +49,9 @@ typedef struct
 } Synchron;
 
 //--------------------------------------------------------------------------- 
+// FUNCTION PROTOTYPES
 
-void producer( Synchron*, Subtotal*, Matrix*, Matrix*, Matrix*);
+void producer( Synchron*, Subtotal*, int*, int*, int*, int, int);
 void consumer(Synchron*, Subtotal*, int*, int);
 void destroyLocks(Synchron*);
 void createLocks(Synchron*);

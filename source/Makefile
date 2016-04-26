@@ -6,10 +6,10 @@
 #
 
 # MAKE VARIABLES
-EXEC1 = multiProcess
-OBJ1 = multiProcess.o fileIO.o
-EXEC2 = multiThread
-OBJ2 = multiThread.o fileIO.o
+EXEC1 = pmms
+OBJ1 = pmms.o fileIO.o
+EXEC2 = tmms
+OBJ2 = tmms.o fileIO.o
 
 CFLAGS = -Wall -Wextra -std=c99 -lrt -pthread -D _XOPEN_SOURCE=500
 CC = gcc
@@ -24,11 +24,11 @@ $(EXEC1) : $(OBJ1)
 $(EXEC2) : $(OBJ2)
 	$(CC) $(OBJ2) -o $(EXEC2) $(CFLAGS)
 
-multiProcess.o : multiProcess.c multiProcess.h fileIO.h
-	$(CC) -c multiProcess.c $(CFLAGS)
+pmms.o : pmms.c pmms.h fileIO.h
+	$(CC) -c pmms.c $(CFLAGS)
 
-multiThread.o : multiThread.c multiThread.h fileIO.h
-	$(CC) -c multiThread.c $(CFLAGS)
+tmms.o : tmms.c tmms.h fileIO.h
+	$(CC) -c tmms.c $(CFLAGS)
 
 fileIO.o : fileIO.c fileIO.h
 	$(CC) -c fileIO.c $(CFLAGS)			

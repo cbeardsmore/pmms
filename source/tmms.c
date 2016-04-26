@@ -1,15 +1,13 @@
  /***************************************************************************
- *	FILE: multiThread.c										   
+ *	FILE: tmms.c										   
  *	AUTHOR: Connor Beardsmore - 15504319								  
  *	UNIT: OS200 Assignment S1 - 2016 														   
  *	PURPOSE: Matrix multiplication using multithreading and POSIX mutexs
  *	LAST MOD: 24/04/16	
- *  REQUIRES: multiThread.h				   
+ *  REQUIRES: tmms.h				   
  ***************************************************************************/
 
-#include "multiThread.h" 
-#define MAX_FILE_LENGTH 40
-#define SUBTOTAL_EMPTY 0
+#include "tmms.h" 
 
 //---------------------------------------------------------------------------
 
@@ -42,35 +40,38 @@ int main(int argc, char* argv[])
 	second = (int*)malloc( N * K * sizeof(int) );
 	product = (int*)malloc( M * K * sizeof(int) );	
 
-	// READ DATA FROM FILE INTO MATRIX ELEMENTS SHARED MEMORY
+	// READ DATA FROM FILE INTO GLOBAL MATRIX VARIABLES
 	readFile( fileA, first, M, N );
 	readFile( fileB, second, N, K );
 
 	// INITIAL SUBTOTAL FIELDS TO "EMPTY"
 	subtotal.value = SUBTOTAL_EMPTY;
-	subtotal.childTID = SUBTOTAL_EMPTY;
-	subtotal.rowNumber = 0;
+	subtotal.threadID = SUBTOTAL_EMPTY;
+	subtotal.rowNumber = SUBTOTAL_EMPTY;
 
-	// CREATE THREADS
+	// CREATE 'M' THREADS IN A MALLOC'D ARRAY
 	pthread_t* producers = (pthread_t*)malloc( sizeof(pthread_t) * M );
-
-	for ( int ii = 0; ii < M; ii++ )
-	{
-		pthread_create( &producers[ii], NULL, producer, NULL );
-	}	
-
-	// CONSUMER
-	consumer(NULL);
 
 	// INITIALISE THE SEMAPHORES
 	createLocks(locks);
+
+	for ( int ii = 0; ii < M; ii++ )
+	{
+		// CREATED THREADS EXECUTE PRODUCER FUNCTION
+		pthread_create( &producers[ii], NULL, producer, NULL );
+	}	
+
+	// PARENT THREAD EXECUTES CONSUMER FUNCTION
+	consumer(NULL);
 
 	// PARENT DESTORYS ALL SEMAPHORES
 	destroyLocks(locks);
 
 	// PRINT CONTENT OF ALL 3 MATRICES
-	//printMatrices( first, second, product, M, N, K );
-	printf("total: %d\n", grandTotal);
+	printMatrices( first, second, product, M, N, K );
+
+	// OUTPUT FINAL TOTAL
+	printf("\nFINAL TOTAL: %d\n", grandTotal);;
 
 	return 0;
 }
@@ -117,7 +118,7 @@ void* producer( void* ptr )
 	}	
 
 		subtotal.value = total;
-		subtotal.childTID = rowNumber;
+		subtotal.threadID = rowNumber;
 
 	pthread_cond_signal( &locks.full );
 	pthread_mutex_unlock( &locks.mutex );
@@ -128,7 +129,7 @@ void* producer( void* ptr )
 //---------------------------------------------------------------------------
 // FUNCTION: consumer
 // IMPORT: locks (Synchron*), subtotal (Subtotal*), total (int*)
-// PURPOSE: Parent process consumes the subtotal + childPID create by children.
+// PURPOSE: Parent process consumes the subtotal + threadID create by thread.
 
 void* consumer(void* ptr)
 {
@@ -143,15 +144,10 @@ void* consumer(void* ptr)
 				pthread_cond_wait( &locks.full, &locks.mutex );
 			}	
 
-			if ( subtotal.value > 10000 )
-				sleep(30000)
-			if ( subtotal.value < 0 )
-				sleep(30000)
-
-			printf( "subtotal: %d, childTID: %d\n", subtotal.value, subtotal.childTID );
+			printf( "subtotal: %d, threadID: %d\n", subtotal.value, subtotal.threadID );
 			grandTotal += subtotal.value;
 			subtotal.value = SUBTOTAL_EMPTY;
-			subtotal.childTID = SUBTOTAL_EMPTY;
+			subtotal.threadID = SUBTOTAL_EMPTY;
 
 			pthread_cond_signal( &locks.empty );
 

@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # COMPILE PROGRAM
-make multiThread
+make tmms
 
 # RUN PROGRAM FOR COMBINATION OF M N K VALUES
 # FROM 1 TO 100
@@ -12,7 +12,7 @@ do
 		for k in {64..1};
 		do
 			echo $i $j $k
-			./multiThread ma2.txt ma2.txt $i $j $k
+			./tmms ma2.txt ma2.txt $i $j $k
 		done
 	done
 done
