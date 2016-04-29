@@ -1,11 +1,11 @@
  /***************************************************************************
- *	FILE: pmms.h							   
- *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: OS200 Assignment S1 - 2016 												   
+ *	FILE: pmms.h
+ *	AUTHOR: Connor Beardsmore - 15504319
+ *	UNIT: OS200 Assignment S1 - 2016
  *	PURPOSE: Header file for pmms.c
- *	LAST MOD: 26/04/16	
+ *	LAST MOD: 26/04/16
  *  REQUIRES: stdio.h, stdlib.h, unistd.h, fcntl.h, semaphore.h, mman.h
- *            stat.h, wait.h, fileIO.h		   
+ *            stat.h, wait.h, fileIO.h
  ***************************************************************************/
 
 #pragma once
@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <semaphore.h>
-#include <sys/mman.h> 
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include "fileIO.h"
@@ -26,35 +26,34 @@
 #define SUBTOTAL_EMPTY 0
 
 //---------------------------------------------------------------------------
-// STRUCT: Stores the value of subtotal and the ID of the child that 
+// STRUCT: Stores the value of subtotal and the ID of the child that
 //		   created it. Also stores row number that the child calculated.
 
-typedef struct 
+typedef struct
 {
 	int value;
 	int childPID;
-	int rowNumber;
+	int rowNum;
 } Subtotal;
 
 //---------------------------------------------------------------------------
-// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex 
+// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex
 //         provides mutual exclusion to data. Full and empty are semaphores
 //         to signal actions from the producer and consumer.
 
-typedef struct 
+typedef struct
 {
 	sem_t mutex;
 	sem_t full;
 	sem_t empty;
 } Synchron;
 
-//--------------------------------------------------------------------------- 
+//---------------------------------------------------------------------------
 // FUNCTION PROTOTYPES
 
 void producer( Synchron*, Subtotal*, int*, int*, int*, int, int);
 void consumer(Synchron*, Subtotal*, int*, int);
-void destroyLocks(Synchron*);
-void createLocks(Synchron*);
+int createLocks(Synchron*);
+int destroyLocks(Synchron*);
 
 //---------------------------------------------------------------------------
- 

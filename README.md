@@ -5,7 +5,7 @@
 
 #####Purpose
 
-Implementation of a matrix multiplication calculator in C. The data from the two matrices to mutiply are read from file. The calculator outputs the subtotal of every row, plus the grand total of all the rows. Part A utilizes Multiprocessing and Part B utilizes Multithreading.
+Implementation of a matrix multiplication calculator in C. The data from the two matrices to mutiply are read from file. The calculator outputs the subtotal of every row, plus the grand total of all the rows. Part A *(pmms)* utilizes Multiprocessing and Part B *(tmms)* utilizes Multithreading.
 Shared memory is established via POSIX's shm_open(). Synchronization is ensured via the use of POSIX semaphores, mutexes and conditions.
  
 #####File List
@@ -52,6 +52,16 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 - M = Matrix A Rows
 - N = Matrix A Columns / Matrix B Rows
 - K = Matrix B Columns	
+
+#####Matrix Multiplication
+
+The product matrix $$C$$'s elements of muliplying matrix $$A$$ with matrix $$B$$ is as follows:
+
+$$C_{i,j}=\sum_{r=1}^N A_{i,r}B_{r,j}$$
+
+The image below illustrates an example of this calculation:
+
+![Matrix Mult. Example](/Users/Connor/Google\ Drive/OS200/Assignment/documentation/mm_example.png)
 
 #####References
 

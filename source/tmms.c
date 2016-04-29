@@ -1,13 +1,13 @@
  /***************************************************************************
- *	FILE: tmms.c										   
- *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: OS200 Assignment S1 - 2016 														   
+ *	FILE: tmms.c
+ *	AUTHOR: Connor Beardsmore - 15504319
+ *	UNIT: OS200 Assignment S1 - 2016
  *	PURPOSE: Matrix multiplication using multithreading and POSIX mutexs
- *	LAST MOD: 24/04/16	
- *  REQUIRES: tmms.h				   
+ *	LAST MOD: 24/04/16
+ *  REQUIRES: tmms.h
  ***************************************************************************/
 
-#include "tmms.h" 
+#include "tmms.h"
 
 //---------------------------------------------------------------------------
 
@@ -16,17 +16,17 @@ int main(int argc, char* argv[])
 	// ENSURE ONLY 6 COMMAND LINE ARGUMENTS ENTERED
 	if ( argc != 6 )
 	{
-		printf( "Usage: ./multiProcess [Matrix A File] [Matrix B File] [M] [N] [K]\n" );
+		printf( "Usage: ./tmms[Matrix A File] [Matrix B File] [M] [N] [K]\n" );
 		printf( "Please see README for detailed steps on how to run!\n" );
 		return 1;
-	}	
+	}
 
 	// VALIDATE THAT M,N,K ARE ALL 1 OR MORE
 	if ( ( atoi(argv[3]) < 1 ) || ( atoi(argv[4]) < 1 ) ||  ( atoi(argv[5]) < 1 ) )
 	{
 		printf("ERROR: Matrix dimensions must be POSITIVE value.\n");
 		return 2;
-	}	
+	}
 
 	// RENAME COMMAND LINE ARGUMENTS FOR CODE READABILITY
 	char* fileA = argv[1];
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	// MAP MATRICES STRUCT TO ADDRESS SPACE, ASSIGN TO POINTERS
 	first = (int*)malloc( M * N * sizeof(int) );
 	second = (int*)malloc( N * K * sizeof(int) );
-	product = (int*)malloc( M * K * sizeof(int) );	
+	product = (int*)malloc( M * K * sizeof(int) );
 
 	// READ DATA FROM FILE INTO GLOBAL MATRIX VARIABLES
 	readFile( fileA, first, M, N );
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	{
 		// CREATED THREADS EXECUTE PRODUCER FUNCTION
 		pthread_create( &producers[ii], NULL, producer, NULL );
-	}	
+	}
 
 	// PARENT THREAD EXECUTES CONSUMER FUNCTION
 	consumer(NULL);
@@ -72,6 +72,12 @@ int main(int argc, char* argv[])
 
 	// OUTPUT FINAL TOTAL
 	printf("\nFINAL TOTAL: %d\n", grandTotal);;
+
+
+
+	// FREE MALLOC'S.
+	// TEST WITH VALGRIND YOU FUCKING SPUD.
+
 
 	return 0;
 }
@@ -101,10 +107,10 @@ void* producer( void* ptr )
 		for ( int jj = 0; jj < N; jj++ )
 		{
 			value += first[offsetA + jj] * second[jj * K + ii];
-		}	
-		
+		}
+
 		product[offsetC + ii] = value;
-	}	
+	}
 
 	for ( int kk = 0; kk < K; kk++ )
 	{
@@ -115,7 +121,7 @@ void* producer( void* ptr )
 	while ( subtotal.value != 0 )
 	{
 		pthread_cond_wait( &locks.empty, &locks.mutex );
-	}	
+	}
 
 		subtotal.value = total;
 		subtotal.threadID = rowNumber;
@@ -142,7 +148,7 @@ void* consumer(void* ptr)
 			while ( subtotal.value == 0 )
 			{
 				pthread_cond_wait( &locks.full, &locks.mutex );
-			}	
+			}
 
 			printf( "subtotal: %d, threadID: %d\n", subtotal.value, subtotal.threadID );
 			grandTotal += subtotal.value;
@@ -154,7 +160,7 @@ void* consumer(void* ptr)
 		pthread_mutex_unlock( &locks.mutex );
 	}
 
-	return NULL;	
+	return NULL;
 }
 
 //---------------------------------------------------------------------------
@@ -175,9 +181,9 @@ void createLocks()
 
 void destroyLocks()
 {
-	pthread_mutex_destroy( &locks.mutex );	
+	pthread_mutex_destroy( &locks.mutex );
 	pthread_cond_destroy( &locks.full );
-	pthread_cond_destroy( &locks.empty );	
+	pthread_cond_destroy( &locks.empty );
 }
 
 //---------------------------------------------------------------------------
@@ -193,13 +199,13 @@ void printMatrix(int* matrix, int rows, int cols)
 
 	// ITERATE OVER ENTIRE MATRIX AND PRINT EACH ELEMENT
 	for ( int ii = 0; ii < rows; ii++ )
-	{	
+	{
 		offset = ii * cols;
 		for ( int jj = 0; jj < cols; jj++ )
-		{	
+		{
 			printf("%d ", matrix[ offset + jj ] );
 		}
-		printf("\n");	
+		printf("\n");
 	}
 }
 
@@ -213,7 +219,7 @@ void printMatrices(int* first, int* second, int* third, int M, int N, int K)
 {
 		printMatrix(first, M, N);
 		printMatrix(second, N, K);
-		printMatrix(third, M, K);	
+		printMatrix(third, M, K);
 }
 
 //--------------------------------------------------------------------------

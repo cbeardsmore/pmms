@@ -1,7 +1,7 @@
 #
 # Makefile For Matrix Multiplication w. Multi-process and Multi-threading
 # OS200 Assignment
-# Last Modified: 16/04/16
+# Last Modified: 28/04/16
 # Connor Beardsmore - 15504319
 #
 
@@ -15,7 +15,6 @@ CFLAGS = -Wall -Wextra -std=c99 -lrt -pthread -D _XOPEN_SOURCE=500
 CC = gcc
 
 # RULES + DEPENDENCIES
-
 all: $(EXEC1) $(EXEC2)
 
 $(EXEC1) : $(OBJ1)
@@ -31,10 +30,7 @@ tmms.o : tmms.c tmms.h fileIO.h
 	$(CC) -c tmms.c $(CFLAGS)
 
 fileIO.o : fileIO.c fileIO.h
-	$(CC) -c fileIO.c $(CFLAGS)			
+	$(CC) -c fileIO.c $(CFLAGS)
 
 clean:
 	rm -f $(EXEC1) $(OBJ1) $(EXEC2) $(OBJ2)
-
-
-
