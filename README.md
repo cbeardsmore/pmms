@@ -61,7 +61,7 @@ $$C_{i,j}=\sum_{r=1}^N A_{i,r}B_{r,j}$$
 
 The image below illustrates an example of this calculation:
 
-![Matrix Mult. Example](/Users/Connor/Google\ Drive/OS200/Assignment/documentation/mm_example.png)
+![mm_example.png](https://bitbucket.org/repo/pdELn5/images/3005166663-mm_example.png)
 
 #####References
 
