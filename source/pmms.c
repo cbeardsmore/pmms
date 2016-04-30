@@ -21,19 +21,19 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// VALIDATE THAT M,N,K ARE ALL POSITIVE VALUES
-	if ( ( atoi(argv[3]) < 1 ) || ( atoi(argv[4]) < 1 ) ||  ( atoi(argv[5]) < 1 ) )
-	{
-		fprintf(stderr, "ERROR - matrix dimensions must be positive values\n");
-		return 1;
-	}
-
 	// RENAME COMMAND LINE ARGUMENTS FOR CODE READABILITY
 	char* fileA = argv[1];
 	char* fileB = argv[2];
 	int M = atoi( argv[3] );
 	int N = atoi( argv[4] );
 	int K = atoi( argv[5] );
+
+	// VALIDATE THAT M,N,K ARE ALL POSITIVE VALUES
+	if ( ( M < 1 ) || ( N < 1 ) ||  ( K < 1 ) )
+	{
+		fprintf(stderr, "ERROR - matrix dimensions must be positive values\n");
+		return 1;
+	}
 
 	// VARIABLE DECLARATIONS
 	int status, total = 0, pid = -1;
@@ -63,15 +63,31 @@ int main(int argc, char* argv[])
 	ftruncate( locksFD, sizeof(Synchron) );
 
 	// MAP SHARED MEMORY SEGMENTS TO ADDRESS SPACE, ASSIGN TO POINTERS
-	first = (int*)mmap( 0, firstSize, PROT_READ | PROT_WRITE, MAP_SHARED, firstFD, 0 );
-	second = (int*)mmap( 0, secondSize, PROT_READ | PROT_WRITE, MAP_SHARED, secondFD, 0 );
-	product = (int*)mmap( 0, productSize, PROT_READ | PROT_WRITE, MAP_SHARED, productFD, 0 );
-	subtotal = (Subtotal*)mmap( 0, sizeof(Subtotal), PROT_READ | PROT_WRITE, MAP_SHARED, subtotalFD, 0 );
-	locks = (Synchron*)mmap( 0, sizeof(Synchron), PROT_READ | PROT_WRITE, MAP_SHARED, locksFD, 0 );
+	first = (int*)mmap( 0, firstSize, PROT_READ | PROT_WRITE,
+												  MAP_SHARED, firstFD, 0 );
+	second = (int*)mmap( 0, secondSize, PROT_READ | PROT_WRITE,
+												  MAP_SHARED, secondFD, 0 );
+	product = (int*)mmap( 0, productSize, PROT_READ | PROT_WRITE,
+												  MAP_SHARED, productFD, 0 );
+	subtotal = (Subtotal*)mmap( 0, sizeof(Subtotal), PROT_READ | PROT_WRITE,
+												  MAP_SHARED, subtotalFD, 0 );
+	locks = (Synchron*)mmap( 0, sizeof(Synchron), PROT_READ | PROT_WRITE,
+												  MAP_SHARED, locksFD, 0 );
 
 	// READ DATA FROM FILE INTO MATRIX SHARED MEMORY
-	readFile( fileA, first, M, N );
-	readFile( fileB, second, N, K );
+	// ERROR CHECK TO CONFIRM THAT BOTH WORKED AS EXPECTED
+	status = readFile( fileA, first, M, N );
+	if ( status !- 0 )
+	{
+		fprintf( stderr, "ERROR - reading first file" );
+		return -1;
+	}
+	status = readFile( fileB, second, N, K );
+	if ( status !- 0 )
+	{
+		fprintf( stderr, "ERROR - reading second file" );
+		return -1;
+	}
 
 	// INITIALIZE SUBTOTAL FIELDS TO "EMPTY" DEFAULT VALUE
 	subtotal->value = SUBTOTAL_EMPTY;
@@ -88,32 +104,33 @@ int main(int argc, char* argv[])
 
 	// CREATE 10 CHILDREN PROCESSES
 	// DOUBLE FORKING AVOIDS ZOMBIE PROCESSES
+	// SEE REPORT OR README.md FOR DETAILS ON HOW THIS IS ACHEIVED
  	for ( int ii = 0; ii < M; ii++ )
  	{
 		if ( pid != 0 )
 		{
-		if ( parent_pid == getpid() )	//only parent forks
-		{
- 			pid = fork();
-		}
-			if ( pid == 0 )		//child
+			// ONLY PARENT WILL FORK INITIALLY
+			if ( parent_pid == getpid() )
+	 			pid = fork();
+
+			// IF YOU'RE A CHILD
+			if ( pid == 0 )
 			{
-				if ( 0 == fork() ) //grandchild
-				{
-					sleep(1);	//let child die
-				}
-				else 			// if your not grandchild, and pid==0, you must be child. die
-				{
+				// FORK A GRANDCHILD
+				if ( 0 == fork() )
+					// GRANDCHILD SLEEPS MOMENTARILY
+					sleep(1);
+
+				// IF NOT GRANDCHILD AND PID==0, YOU MUST BE INITIAL CHILD.
+				// FIRST CHILD EXITS ONCE IT'S FORKED THE GRANDCHILD
+				else
 					exit(0);
-				}
 			}
-			else 		//parent calls wait
-			{
+			// PARENT WAITS ON FIRST CHILD
+			else
 				waitpid(pid, &status, 0);
-			}
 		}
  	}
-
 
 	// CONSUMER. PARENT WAITS FOR SUBTOTAL TO NOT BE EMPTY.
 	// ONLY PARENT WILL HAVE pid != 0, AS FORK RETURNS 0 TO CHILDREN.
@@ -264,3 +281,38 @@ int destroyLocks(Synchron* locks)
 }
 
 //---------------------------------------------------------------------------
+// FUNCTION: printMatrix()
+// IMPORT: newMatrix (Matrix*)
+// PURPOSE: Print matrix contents to std out for debugging purposes
+
+void printMatrix(int* matrix, int rows, int cols)
+{
+	// OFFSET TO CALCULATE "ROWS" OF THE 1D ELEMENT ARRAY
+	int offset = 0;
+	printf("\n");
+
+	// ITERATE OVER ENTIRE MATRIX AND PRINT EACH ELEMENT
+	for ( int ii = 0; ii < rows; ii++ )
+	{
+		offset = ii * cols;
+		for ( int jj = 0; jj < cols; jj++ )
+		{
+			printf("%d ", matrix[ offset + jj ] );
+		}
+		printf("\n");
+	}
+}
+
+//--------------------------------------------------------------------------
+// FUNCTION: printMatrices
+// IMPORT: first (int*), second (int*), product (int*)
+// PURPOSE: Prints the contents of three different Matrices to std out
+
+void printMatrices(int* first, int* second, int* third, int M, int N, int K)
+{
+		printMatrix(first, M, N);
+		printMatrix(second, N, K);
+		printMatrix(third, M, K);
+}
+
+//--------------------------------------------------------------------------

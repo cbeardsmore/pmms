@@ -1,10 +1,10 @@
  /***************************************************************************
- *	FILE: tmms.h												   
- *	AUTHOR: Connor Beardsmore - 15504319								  
- *	UNIT: OS200 Assignment S1 - 2016 														   
+ *	FILE: tmms.h
+ *	AUTHOR: Connor Beardsmore - 15504319
+ *	UNIT: OS200 Assignment S1 - 2016
  *	PURPOSE: Header file for tmms.c
- *	LAST MOD: 24/04/16	
- *  REQUIRES: stdlib.h, pthread.h, fileIO.h			   
+ *	LAST MOD: 24/04/16
+ *  REQUIRES: stdlib.h, pthread.h, fileIO.h
  ***************************************************************************/
 
 #pragma once
@@ -19,10 +19,10 @@
 #define SUBTOTAL_EMPTY 0
 
 //---------------------------------------------------------------------------
-// STRUCT: Stores the value of subtotal and the ID of the thread that 
+// STRUCT: Stores the value of subtotal and the ID of the thread that
 //		   created it. Also stores row number that the thread calculated.
 
-typedef struct 
+typedef struct
 {
 	int value;
 	int threadID;
@@ -30,11 +30,11 @@ typedef struct
 } Subtotal;
 
 //---------------------------------------------------------------------------
-// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex 
+// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex
 //         provides mutual exclusion to data. Full and empty are conditions
-//         that the producer and consumer look to meet.
+//         that the producer and consumer wait until they are met.
 
-typedef struct 
+typedef struct
 {
 	pthread_mutex_t mutex;
 	pthread_cond_t full;
@@ -46,6 +46,7 @@ typedef struct
 
 Subtotal subtotal;
 int grandTotal;
+int status;
 Synchron locks;
 int* first;
 int* second;
@@ -59,8 +60,9 @@ int K;
 
 void* producer(void* ptr);
 void* consumer(void* ptr);
-void destroyLocks();
-void createLocks();
+int destroyLocks();
+int createLocks();
+void freeMatrices(int*, int*, int*);
 void printMatrix(int*, int, int);
 void printMatrices(int*, int*, int*, int, int, int);
 
