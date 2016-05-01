@@ -254,7 +254,7 @@ void consumer(Synchron* locks, Subtotal* subtotal, int* total, int productRows)
 
 int createLocks(Synchron* locks)
 {
-	// STATUS RETURNS -1 UPON ERROR, 0 UPON SUCCESS
+	// IF ANY METHOD FAILS, STATUS WILL BE NON-ZERO
 	int status = 0;
 	status += sem_init( &locks->mutex, -1, 1 );
 	status += sem_init( &locks->full, -1, 0 );
@@ -271,7 +271,7 @@ int createLocks(Synchron* locks)
 
 int destroyLocks(Synchron* locks)
 {
-	// STATUS RETURNS -1 UPON ERROR, 0 UPON SUCCESS
+	// IF ANY METHOD FAILS, STATUS WILL BE NON-ZERO
 	int status = 0;
 	status += sem_destroy( &locks->mutex );
 	status += sem_destroy( &locks->full );

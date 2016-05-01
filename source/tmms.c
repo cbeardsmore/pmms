@@ -117,11 +117,14 @@ void* producer( void* ptr )
 	int value;
 	int total = 0;
 
+	// THREAD DETERMINES WHICH ROW TO CALCULATE
+	// MUTEX REQUIRED TO ACCESS rowNumber, SO EACH THREAD HAS DISTINCT VALUE
 	pthread_mutex_lock( &locks.mutex );
 		rowNumber = subtotal.rowNumber;
 		subtotal.rowNumber = subtotal.rowNumber + 1;
 	pthread_mutex_unlock( &locks.mutex );
 
+	// CALCULATE OFFSETS TO CONVERT 1D ARRAYS TO VIRTUAL 2D
 	int offsetA = rowNumber * N;
 	int offsetC = rowNumber * K;
 
@@ -148,6 +151,7 @@ void* producer( void* ptr )
 	pthread_cond_signal( &locks.full );
 	pthread_mutex_unlock( &locks.mutex );
 
+	// THREAD FINISHES ONCE ROW CALCULATED
 	pthread_exit(0);
 }
 
@@ -188,6 +192,7 @@ void* consumer(void* ptr)
 
 int createLocks()
 {
+	// IF ANY METHOD FAILS, STATUS WILL BE NON-ZERO	
 	int status = 0;
 	status += pthread_mutex_init( &locks.mutex, NULL );
 	status += pthread_cond_init( &locks.full, NULL );
@@ -202,6 +207,7 @@ int createLocks()
 
 int destroyLocks()
 {
+	// IF ANY METHOD FAILS, STATUS WILL BE NON-ZERO
 	int status = 0;
 	status += pthread_mutex_destroy( &locks.mutex );
 	status += pthread_cond_destroy( &locks.full );
@@ -237,8 +243,9 @@ void printMatrix(int* matrix, int rows, int cols)
 	{
 		offset = ii * cols;
 		for ( int jj = 0; jj < cols; jj++ )
+		{
 			printf("%d ", matrix[ offset + jj ] );
-
+		}
 		printf("\n");
 	}
 }
