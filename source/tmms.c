@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 	status = 0;
 
 	// VALIDATE THAT M,N,K ARE ALL 1 OR MORE
-	if ( M < 1 ) || ( N < 1 ) ||  ( K < 1 ) )
+	if ( ( M < 1 ) || ( N < 1 ) ||  ( K < 1 ) )
 	{
 		printf("ERROR - Matrix dimensions must bee positive value.\n");
 		return -1;
@@ -44,17 +44,17 @@ int main(int argc, char* argv[])
 	// READ DATA FROM FILE INTO MATRIX SHARED MEMORY
 	// ERROR CHECK TO CONFIRM THAT BOTH WORKED AS EXPECTED
 	status = readFile( fileA, first, M, N );
-	if ( status !- 0 )
+	if ( status != 0 )
 	{
 		fprintf( stderr, "ERROR - reading first file" );
-		freeMatrices(first, second, prduct);
+		freeMatrices(first, second, product);
 		return -1;
 	}
 	status = readFile( fileB, second, N, K );
-	if ( status !- 0 )
+	if ( status != 0 )
 	{
 		fprintf( stderr, "ERROR - reading second file" );
-		freeMatrices(first, second, prduct);
+		freeMatrices(first, second, product);
 		return -1;
 	}
 
@@ -71,14 +71,17 @@ int main(int argc, char* argv[])
 	if ( status != 0 )
 	{
 		fprintf( stderr, "ERROR - creating POSIX mutex + conditions\n");
-		freeMatrices(first, second, prduct);
+		freeMatrices(first, second, product);
 		free(producers);
 		return -1;
 	}
 
 	// THE 'M' CREATED THREADS EXECUTE PRODUCER FUNCTION
 	for ( int ii = 0; ii < M; ii++ )
+	{	
 		pthread_create( &producers[ii], NULL, producer, NULL );
+		pthread_detach( producers[ii] );
+	}
 
 	// PARENT THREAD EXECUTES CONSUMER FUNCTION
 	consumer(NULL);
@@ -88,7 +91,7 @@ int main(int argc, char* argv[])
 	if ( status != 0 )
 	{
 		fprintf( stderr, "ERROR - destroying POSIX mutex + conditions\n");
-		freeMatrices(first, second, prduct);
+		freeMatrices(first, second, product);
 		free(producers);
 		return -1;
 	}

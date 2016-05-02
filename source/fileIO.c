@@ -43,7 +43,7 @@ int readFile( char* filename, int* matrix, int rows, int cols)
 				if ( (offset + jj) < (rows * cols - 1) )
 				{
 					fprintf( stderr, "ERROR - not enough matrix values" );
-					status = -1
+					status = -1;
 				}
 				// CHECK THAT NO ERROR FORCED EARLY EXIT
 				else if ( ferror(f) )

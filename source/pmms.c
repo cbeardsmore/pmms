@@ -77,13 +77,13 @@ int main(int argc, char* argv[])
 	// READ DATA FROM FILE INTO MATRIX SHARED MEMORY
 	// ERROR CHECK TO CONFIRM THAT BOTH WORKED AS EXPECTED
 	status = readFile( fileA, first, M, N );
-	if ( status !- 0 )
+	if ( status != 0 )
 	{
 		fprintf( stderr, "ERROR - reading first file" );
 		return -1;
 	}
 	status = readFile( fileB, second, N, K );
-	if ( status !- 0 )
+	if ( status != 0 )
 	{
 		fprintf( stderr, "ERROR - reading second file" );
 		return -1;
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 		if ( pid != 0 )
 		{
 			// ONLY PARENT WILL FORK INITIALLY
-			if ( parent_pid == getpid() )
+			if ( parentPID == getpid() )
 	 			pid = fork();
 
 			// IF YOU'RE A CHILD
@@ -217,6 +217,7 @@ void producer( Synchron* locks, Subtotal* subtotal,
 		sem_post(&locks->mutex);
 	sem_post(&locks->full);
 	// SIGNAL THAT SUBTOTAL IS NOW FULL AND RELEASE SUBTOTAL LOCK
+}
 
 //---------------------------------------------------------------------------
 // FUNCTION: consumer
