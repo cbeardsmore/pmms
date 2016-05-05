@@ -1,13 +1,13 @@
  /***************************************************************************
- *	FILE: tmms.c
+ *	FILE: pmms.c
  *	AUTHOR: Connor Beardsmore - 15504319
  *	UNIT: OS200 Assignment S1 - 2016
  *	PURPOSE: Matrix multiplication using multithreading and POSIX mutexs
  *	LAST MOD: 24/04/16
- *  REQUIRES: tmms.h
+ *  REQUIRES: pmms.h
  ***************************************************************************/
 
-#include "tmms.h"
+#include "pmms.h"
 
 //---------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	// ENSURE ONLY 6 COMMAND LINE ARGUMENTS ENTERED
 	if ( argc != 6 )
 	{
-		printf( "Usage: ./tmms[Matrix A File] [Matrix B File] [M] [N] [K]\n" );
+		printf( "Usage: ./pmms[Matrix A File] [Matrix B File] [M] [N] [K]\n" );
 		printf( "Please see README for detailed steps on how to run!\n" );
 		return -1;
 	}
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 	// THE 'M' CREATED THREADS EXECUTE PRODUCER FUNCTION
 	for ( int ii = 0; ii < M; ii++ )
-	{	
+	{
 		pthread_create( &producers[ii], NULL, producer, NULL );
 		pthread_detach( producers[ii] );
 	}
@@ -195,7 +195,7 @@ void* consumer(void* ptr)
 
 int createLocks()
 {
-	// IF ANY METHOD FAILS, STATUS WILL BE NON-ZERO	
+	// IF ANY METHOD FAILS, STATUS WILL BE NON-ZERO
 	int status = 0;
 	status += pthread_mutex_init( &locks.mutex, NULL );
 	status += pthread_cond_init( &locks.full, NULL );

@@ -1,8 +1,8 @@
  /***************************************************************************
- *	FILE: tmms.h
+ *	FILE: pmms.h
  *	AUTHOR: Connor Beardsmore - 15504319
  *	UNIT: OS200 Assignment S1 - 2016
- *	PURPOSE: Header file for tmms.c
+ *	PURPOSE: Header file for pmms.c
  *	LAST MOD: 24/04/16
  *  REQUIRES: stdlib.h, pthread.h, fileIO.h
  ***************************************************************************/
