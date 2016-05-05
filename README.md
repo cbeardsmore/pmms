@@ -5,7 +5,7 @@
 
 #####Purpose
 
-Implementation of a matrix multiplication calculator in C. The data from the two matrices to mutiply are read from file. The calculator outputs the subtotal of every row, plus the grand total of all the rows. Part A *(pmms)* utilizes Multiprocessing and Part B *(tmms)* utilizes Multithreading.
+Implementation of a matrix multiplication calculator in C. The data from the two matrices to mutiply are read from file. The calculator outputs the subtotal of every row, plus the grand total of all the rows. Part A utilizes Multiprocessing and Part B utilizes Multithreading.
 Shared memory is established via POSIX's shm_open(). Synchronization is ensured via the use of POSIX semaphores, mutexes and conditions.
  
 #####File List
@@ -13,13 +13,11 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 	.c FILES
 	--------
 	pmms.c
-	tmms.c
 	fileIO.c
 
 	.h FILES
 	--------
 	pmms.h
-	tmms.c
 	fileIO.h
 
 	OTHER
@@ -31,20 +29,14 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 
 #####Instructions to Compile + Run
 
-*To Compile, choose one of the following:*
+*To Compile:*
 
-	make all
-	make pmms
-	make tmms
+	make
 
-*To Run Multiprocess:*
+*To Run:*
 
 	./pmms [file A] [file B] [M] [N] [K]
 
-*To Run Multithreads:*  
-
-	./tmms [file A] [file B] [M] [N] [K]
-	
 *where:*  
   
 - file A = Matrix A Filename

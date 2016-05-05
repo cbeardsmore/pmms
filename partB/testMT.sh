@@ -12,7 +12,7 @@ do
 		for k in {1..100};
 		do
 			echo $i $j $k
-			./tmms ma2.txt ma2.txt $i $j $k
+			./pmms allOnes.txt allOnes.txt $i $j $k
 		done
 	done
 done
