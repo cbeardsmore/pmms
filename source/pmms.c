@@ -8,6 +8,10 @@
  ***************************************************************************/
 
 #include "pmms.h"
+#include <signal.h>
+#include <sys/wait.h>
+#include <sys/resource.h>
+#include <sys/types.h>
 
 //---------------------------------------------------------------------------
 
@@ -105,31 +109,15 @@ int main(int argc, char* argv[])
 	// CREATE 10 CHILDREN PROCESSES
 	// DOUBLE FORKING AVOIDS ZOMBIE PROCESSES
 	// SEE REPORT OR README.md FOR DETAILS ON HOW THIS IS ACHEIVED
+
+	signal(SIGCHLD, SIG_IGN);
+
  	for ( int ii = 0; ii < M; ii++ )
  	{
-		if ( pid != 0 )
-		{
-			// ONLY PARENT WILL FORK INITIALLY
-			if ( parentPID == getpid() )
-	 			pid = fork();
-
-			// IF YOU'RE A CHILD
-			if ( pid == 0 )
-			{
-				// FORK A GRANDCHILD
-				if ( 0 == fork() )
-					// GRANDCHILD SLEEPS MOMENTARILY
-					sleep(1);
-
-				// IF NOT GRANDCHILD AND PID==0, YOU MUST BE INITIAL CHILD.
-				// FIRST CHILD EXITS ONCE IT'S FORKED THE GRANDCHILD
-				else
-					exit(0);
-			}
-			// PARENT WAITS ON FIRST CHILD
-			else
-				waitpid(pid, &status, 0);
-		}
+ 		if ( parentPID == getpid() )
+ 		{
+ 			pid = fork();
+ 		}	
  	}
 
 	// CONSUMER. PARENT WAITS FOR SUBTOTAL TO NOT BE EMPTY.
@@ -159,7 +147,7 @@ int main(int argc, char* argv[])
 
 	// OUTPUT FINAL TOTAL
 	printf("\nFINAL TOTAL: %d\n", total);
-
+	
 	return 0;
 }
 //---------------------------------------------------------------------------
