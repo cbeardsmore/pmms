@@ -1,4 +1,4 @@
-# Makefile For Matrix Multiplication w. Multi-threading
+# Makefile For Matrix Multiplication w. Multithreading
 # OS200 Assignment
 # Last Modified: 07/05/16
 # Connor Beardsmore - 15504319

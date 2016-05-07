@@ -5,9 +5,9 @@
 
 #####Purpose
 
-Implementation of a matrix multiplication calculator in C. The data from the two matrices to mutiply are read from file. The calculator outputs the subtotal of every row, plus the grand total of all the rows. Part A utilizes Multiprocessing and Part B utilizes Multithreading.
-Shared memory is established via POSIX's shm_open(). Synchronization is ensured via the use of POSIX semaphores, mutexes and conditions.
+Implementation of a matrix multiplication calculator in C99. The data from the two matrices to mutiply are read from file with the matrix elements being space seperated. The calculator outputs the subtotal of every row, plus the total of all the row subtotals combined. Part A utilizes Multiprocessing and Part B utilizes Multithreading. Shared memory is established via POSIX's shm_open(). Synchronization is ensured via the use of POSIX semaphores, mutexes and conditions.
  
+-
 #####File List
 
 	.c FILES
@@ -26,7 +26,7 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 	README.md
 	/testFiles
 	
-
+-
 #####Instructions to Compile + Run
 
 *To Compile:*
@@ -36,6 +36,10 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 *To Run:*
 
 	./pmms [file A] [file B] [M] [N] [K]
+	
+*To Clean:*
+
+	make clean
 
 *where:*  
   
@@ -45,6 +49,7 @@ Shared memory is established via POSIX's shm_open(). Synchronization is ensured 
 - N = Matrix A Columns / Matrix B Rows
 - K = Matrix B Columns	
 
+-
 #####Matrix Multiplication
 
 The product matrix $$C$$'s elements of muliplying matrix $$A$$ with matrix $$B$$ is as follows:
@@ -55,6 +60,7 @@ The image below illustrates an example of this calculation:
 
 ![mm_example.png](./documentation/mm_example.png)
 
+-
 #####References
 
 Silberschatz, Abraham, Peter B. Galvin, and Greg Gagne. *Operating System Concepts*. 9th ed. Reading, MA: Addison-Wesley, 1994.

@@ -38,13 +38,13 @@ int main(int argc, char* argv[])
     // VARIABLE DECLARATIONS
     int status = 0, total = 0, pid = -1;
     int parentPID = getpid();
-	Subtotal* subtotal;
+    Subtotal* subtotal;
     Synchron* locks;
 
-	// MATRIX POINTERS
+    // MATRIX POINTERS
     int *first, *second, *product;
 
-	// FILE DESCRIPTORS
+    // FILE DESCRIPTORS
     int firstFD, secondFD, productFD, subtotalFD, locksFD;
 
     // CALCULATE TOTAL SIZE NEEDED FOR DATA OF THE 3 MATRICES
@@ -59,9 +59,9 @@ int main(int argc, char* argv[])
     subtotalFD = shm_open( "subtotal", O_CREAT | O_RDWR, 0666 );
     locksFD = shm_open( "sync", O_CREAT | O_RDWR, 0666 );
 
-	// ENSURE THAT ALL MEMORY SEGMENTS WERE CREATED CORRECTLY
+    // ENSURE THAT ALL MEMORY SEGMENTS WERE CREATED CORRECTLY
     if ( (firstFD == -1) || (secondFD == -1) || (productFD == -1) ||
-         		            (subtotalFD == -1) || (locksFD == -1) )
+                            (subtotalFD == -1) || (locksFD == -1) )
     {
         fprintf( stderr, "ERROR - creating shared memory blocks\n" );
         return -1;
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
     status = readFile( fileA, first, M, N );
     if ( status != 0 )
     {
-		// ERROR MESSAGE GIVEN WITHIN readFile()
+        // ERROR MESSAGE GIVEN WITHIN readFile()
         return -1;
     }
     status = readFile( fileB, second, N, K );
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
     status = createLocks(locks);
     if ( status != 0 )
     {
-        fprintf( stderr, "ERROR - creating POSIX semaphores\n");
+        fprintf( stderr, "ERROR - creating POSIX semaphores\n" );
         return -1;
     }
 
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
     // ONLY PARENT WILL HAVE pid != 0, AS FORK RETURNS 0 TO CHILDREN.
     if ( pid != 0 )
     {
-        consumer(locks, subtotal, &total, M);
+        consumer( locks, subtotal, &total, M );
     }
 
     // PRODUCER. CHILD STORES CALCULATION IN SUBTOTAL.
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
 
     if ( pid == 0 )
     {
-        producer(locks, subtotal, first, second, product, N, K);
+        producer( locks, subtotal, first, second, product, N, K );
         // CHILD EXITS IMMEDIATELY AFTER IT DOES CACLULATIONS
         _exit(0);
     }
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
     status = destroyLocks(locks);
     if ( status != 0 )
     {
-        fprintf( stderr, "ERROR - destroying POSIX semaphores\n");
+        fprintf( stderr, "ERROR - destroying POSIX semaphores\n" );
         return -1;
     }
 
@@ -159,21 +159,20 @@ int main(int argc, char* argv[])
     status += close(locksFD);
     if ( status != 0 )
     {
-        fprintf( stderr, "ERROR - closing shared memory\n");
+        fprintf( stderr, "ERROR - closing shared memory\n" );
         return -1;
     }
 
     // OUTPUT FINAL TOTAL
-    printf("Total: %d\n", total);
-
+    printf( "Total: %d\n", total );
     return 0;
 }
 
 //---------------------------------------------------------------------------
 // FUNCTION: producer
 // IMPORT: locks (Synchron*), subtotal (Subtotal*),
-//			first (Matrix*), second (Matrix*), product (Matrix*)
-//			N (int), K (int)
+//         first (Matrix*), second (Matrix*), product (Matrix*)
+//         N (int), K (int)
 // PURPOSE: Parent process consumes the subtotal + childPID create by children.
 // NOTE: Numerous of imports is relatively high. For scope of this project and
 //       readbility, I will leave as is. If extending: convert to matrix array.
@@ -181,7 +180,8 @@ int main(int argc, char* argv[])
 void producer( Synchron* locks, Subtotal* subtotal,
                             int* first, int* second, int* product, int N, int K)
 {
-    int value, rowNumber, offsetA, offsetC;
+    int value, rowNumber;
+    int offsetA, offsetC;
     int total = 0;
 
     // MUTEX REQUIRED TO FIND WHICH ROWNUMBER CHILD WILL CALCULATE
@@ -196,7 +196,7 @@ void producer( Synchron* locks, Subtotal* subtotal,
     offsetA = rowNumber * N;
     offsetC = rowNumber * K;
 
-    // NO LOCKS NEEDED FOR ACTUALL CALCULATION
+    // NO LOCKS NEEDED FOR ACTUAL CALCULATION
     // VALUES READ / WRITTEN TO ARE INDEPENDENT BETWEEN CHILDREN
     // ACTUAL MATRIX MULTIPLICATION CALCULATION. SEE README.md FOR DETAILS
     for ( int ii = 0; ii < K; ii++ )
@@ -229,7 +229,7 @@ void producer( Synchron* locks, Subtotal* subtotal,
 //---------------------------------------------------------------------------
 // FUNCTION: consumer
 // IMPORT: locks (Synchron*), subtotal (Subtotal*),
-//		   total (int*), productRows (int)
+//         total (int*), productRows (int)
 // PURPOSE: Parent process consumes the subtotal + childPID create by children.
 
 void consumer(Synchron* locks, Subtotal* subtotal, int* total, int productRows)
@@ -288,7 +288,7 @@ int destroyLocks(Synchron* locks)
 
 //---------------------------------------------------------------------------
 // FUNCTION: printMatrix()
-// IMPORT: newMatrix (Matrix*)
+// IMPORT: newMatrix (Matrix*), rows (int), cols (int)
 // PURPOSE: Print matrix contents to stdout for debugging purposes
 
 void printMatrix(int* matrix, int rows, int cols)
@@ -302,7 +302,7 @@ void printMatrix(int* matrix, int rows, int cols)
         offset = ii * cols;
         for ( int jj = 0; jj < cols; jj++ )
         {
-            printf("%d ", matrix[ offset + jj ] );
+            printf( "%d ", matrix[ offset + jj ] );
         }
         printf("\n");
     }
@@ -315,9 +315,9 @@ void printMatrix(int* matrix, int rows, int cols)
 
 void printMatrices(int* first, int* second, int* third, int M, int N, int K)
 {
-        printMatrix(first, M, N);
-        printMatrix(second, N, K);
-        printMatrix(third, M, K);
+        printMatrix( first, M, N );
+        printMatrix( second, N, K );
+        printMatrix( third, M, K );
 }
 
 //--------------------------------------------------------------------------

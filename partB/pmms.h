@@ -20,17 +20,17 @@
 
 //---------------------------------------------------------------------------
 // STRUCT: Stores the value of subtotal and the ID of the thread that
-//		   created it. Also stores row number that the thread calculated.
+//         created it. Also stores row number that the thread calculated.
 
 typedef struct
 {
     int value;
-    long threadID;
     int rowNumber;
+    long threadID;
 } Subtotal;
 
 //---------------------------------------------------------------------------
-// STRUCT: Stores 3 locks for use in producer-consumer problem.
+// STRUCT: Stores 3 locks for use in the producer-consumer problem.
 //         Mutex provides mutual exclusion to data.
 //         Full and empty are conditions that the producer and consumer
 //         wait until they are met.
@@ -46,14 +46,15 @@ typedef struct
 // GLOBAL VARIABLES FOR USE IN MULTITHREADS
 
 Subtotal subtotal;
+Synchron locks;
 int grandTotal;
 int status;
-Synchron locks;
 
 // MATRIX POINTERS AND DIMENSIONS
 int* first;
 int* second;
 int* product;
+// SEE README FOR WHAT THESE VARIABLES REPRESENT (AND REASON FOR NAMING)
 int M;
 int N;
 int K;

@@ -2,7 +2,7 @@
  *  FILE: pmms.c
  *  AUTHOR: Connor Beardsmore - 15504319
  *  UNIT: OS200 Assignment S1 - 2016
- *  PURPOSE: Matrix multiplication using multithreading and POSIX mutexs
+ *  PURPOSE: Matrix multiplication using multithreading and POSIX locks
  *  LAST MOD: 07/05/16
  *  REQUIRES: pmms.h
  ***************************************************************************/
@@ -29,14 +29,14 @@ int main(int argc, char* argv[])
     K = atoi( argv[5] );
     status = 0;
 
-    // VALIDATE THAT M,N,K ARE ALL 1 OR MORE
+    // VALIDATE THAT M,N,K ARE ALL POSITIVE VALUES
     if ( ( M < 1 ) || ( N < 1 ) ||  ( K < 1 ) )
     {
-        printf( "ERROR - Matrix dimensions must bee positive value.\n" );
+        printf( "ERROR - Matrix dimensions must be positive value\n" );
         return -1;
     }
 
-    // MAP MATRICES STRUCT TO ADDRESS SPACE, ASSIGN TO POINTERS
+    // MAP MATRICES ARRAYS TO ADDRESS SPACE, ASSIGN TO POINTERS
     first = (int*)malloc( M * N * sizeof(int) );
     second = (int*)malloc( N * K * sizeof(int) );
     product = (int*)malloc( M * K * sizeof(int) );
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // THE 'M' CREATED THREADS EXECUTE PRODUCER FUNCTION
+    // THE M CREATED THREADS EXECUTE PRODUCER FUNCTION
     // NO THREAD SPECIFIC DATA IS REQUIRED
     for ( int ii = 0; ii < M; ii++ )
     {
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
     }
 
     // PARENT THREAD EXECUTES CONSUMER FUNCTION
-    consumer(NULL);
+    consumer();
 
     // PARENT DESTORYS ALL SEMAPHORES
     status = destroyLocks(locks);
@@ -116,16 +116,20 @@ void* producer()
     int value;
 
     // THREAD DETERMINES WHICH ROW TO CALCULATE
-    // MUTEX REQUIRED TO ACCESS rowNumber, SO EACH THREAD HAS DISTINCT VALUE
+    // MUTEX REQUIRED TO ACCESS rowNumber, ENSURES THREAD HAS DISTINCT VALUE
     pthread_mutex_lock( &locks.mutex );
+
         rowNumber = subtotal.rowNumber;
         subtotal.rowNumber = subtotal.rowNumber + 1;
+
     pthread_mutex_unlock( &locks.mutex );
 
     // CALCULATE OFFSETS TO CONVERT 1D ARRAYS TO VIRTUAL 2D
     int offsetA = rowNumber * N;
     int offsetC = rowNumber * K;
 
+    // ACTUAL MULTIPLICATION CALCULATIONS
+    // SEE README FOR HOW THIS IS PERFORMED
     for ( int ii = 0; ii < K; ii++ )
     {
         value = 0;
@@ -159,15 +163,16 @@ void* producer()
 
 //---------------------------------------------------------------------------
 // FUNCTION: consumer
-// PURPOSE: Parent process consumes the subtotal + threadID create by thread.
+// PURPOSE: Parent process consumes the subtotal + threadID created by thread.
 
 void* consumer()
 {
     grandTotal = 0;
 
+    // LOOP M TIMES FOR EACH ROW OF PRODUCT MATRIX
     for ( int ii = 0; ii < M; ii++ )
     {
-    // WAIT FOR LOCK BEFORE ACCESSING SHARED DATA
+        // WAIT FOR LOCK BEFORE ACCESSING SHARED DATA
         pthread_mutex_lock( &locks.mutex );
         while ( subtotal.value == 0 )
             // GIVE UP MUTEX LOCK WHILE WAITING FOR CONDITION
@@ -220,7 +225,7 @@ int destroyLocks()
 //---------------------------------------------------------------------------
 // FUNCTION freeMatrices
 // IMPORT: first (int*), second (int*), third (int*)
-// PURPOSE: Free's the malloc'd member associated with the matrices imported
+// PURPOSE: Free's the malloc'd arrays associated with the matrices imported
 
 void freeMatrices(int* first, int* second, int* product)
 {
@@ -231,14 +236,13 @@ void freeMatrices(int* first, int* second, int* product)
 
 //---------------------------------------------------------------------------
 // FUNCTION: printMatrix()
-// IMPORT: newMatrix (Matrix*)
-// PURPOSE: Print matrix contents to std out for debugging purposes
+// IMPORT: matrix (int*), rows (int), cols (int)
+// PURPOSE: Print matrix contents to stdout for debugging purposes
 
 void printMatrix(int* matrix, int rows, int cols)
 {
     // OFFSET TO CALCULATE "ROWS" OF THE 1D ELEMENT ARRAY
     int offset = 0;
-    printf("\n");
 
     // ITERATE OVER ENTIRE MATRIX AND PRINT EACH ELEMENT
     for ( int ii = 0; ii < rows; ii++ )
@@ -254,8 +258,8 @@ void printMatrix(int* matrix, int rows, int cols)
 
 //--------------------------------------------------------------------------
 // FUNCTION: printMatrices
-// IMPORT: first (int*), second (int*), product (int*)
-// PURPOSE: Prints the contents of three different Matrices to std out
+// IMPORT: first (int*), second (int*), product (int*), M,N,K (int)
+// PURPOSE: Prints the contents of three different Matrices to stdout
 
 void printMatrices(int* first, int* second, int* third, int M, int N, int K)
 {

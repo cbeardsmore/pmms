@@ -32,8 +32,8 @@
 typedef struct
 {
     int value;
-    int childPID;
     int rowNum;
+    int childPID;
 } Subtotal;
 
 //---------------------------------------------------------------------------

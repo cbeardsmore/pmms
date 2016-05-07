@@ -13,9 +13,9 @@
 // FUNCTION: readFile()
 // IMPORT: filename (char*), matrix (int*), rows (int), cols (int)
 // EXPORT: status (int)
-// PURPOSE: Read matrix from file and store its elements in an int array
+// PURPOSE: Read matrix from file and store its elements in int array
 
-int readFile( char* filename, int* matrix, int rows, int cols)
+int readFile(char* filename, int* matrix, int rows, int cols)
 {
     int nRead;
     int offset = 0;
@@ -47,7 +47,7 @@ int readFile( char* filename, int* matrix, int rows, int cols)
                 // CHECK THAT NO ERROR FORCED EARLY EXIT
                 else if ( ferror(f) )
                 {
-                    perror("ERROR - reading matrix file!\n");
+                    perror( "ERROR - reading matrix file!\n" );
                     return -1;
                 }
             }
