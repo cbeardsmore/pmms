@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	}
 
 	// VARIABLE DECLARATIONS
-	int status, total = 0, pid = -1;
+	int status = 0, total = 0, pid = -1;
 	int parentPID = getpid();
 	int *first, *second, *product;							//MATRIX POINTERS
 	int firstFD, secondFD, productFD, subtotalFD, locksFD;  //FILE DESCRIPTORS
@@ -58,13 +58,24 @@ int main(int argc, char* argv[])
 	productFD = shm_open( "matriXC", O_CREAT | O_RDWR, 0666 );
 	subtotalFD = shm_open( "subtotal", O_CREAT | O_RDWR, 0666 );
 	locksFD = shm_open( "sync", O_CREAT | O_RDWR, 0666 );
+	if ( (firstFD == -1) || (secondFD == -1) || (productFD == -1) ||
+	 	(subtotalFD == -1) || (locksFD == -1) )
+	{
+		fprintf( stderr, "ERROR - creating shared memory blocks\n" );
+		return -1;
+	}
 
 	// TRUNCATE SEGMENTS TO APPRIORIATE SIZES
-	ftruncate( firstFD, firstSize );
-	ftruncate( secondFD, secondSize );
-	ftruncate( productFD, productSize );
-	ftruncate( subtotalFD, sizeof(Subtotal) );
-	ftruncate( locksFD, sizeof(Synchron) );
+	status += ftruncate( firstFD, firstSize );
+	status += ftruncate( secondFD, secondSize );
+	status += ftruncate( productFD, productSize );
+	status += ftruncate( subtotalFD, sizeof(Subtotal) );
+	status += ftruncate( locksFD, sizeof(Synchron) );
+	if ( status != 0 )
+	{
+		fprintf( stderr, "ERROR - setting shared memory size\n" );
+		return -1;
+	}
 
 	// MAP SHARED MEMORY SEGMENTS TO ADDRESS SPACE, ASSIGN TO POINTERS
 	first = (int*)mmap( 0, firstSize, PROT_READ | PROT_WRITE,
@@ -107,18 +118,12 @@ int main(int argc, char* argv[])
 	}
 
 	// CREATE 10 CHILDREN PROCESSES
-	// DOUBLE FORKING AVOIDS ZOMBIE PROCESSES
+	// SIGNAL TO AVOID CREATION OF ZOMBIE PROCESSES
 	// SEE REPORT OR README.md FOR DETAILS ON HOW THIS IS ACHEIVED
-
 	signal(SIGCHLD, SIG_IGN);
-
  	for ( int ii = 0; ii < M; ii++ )
- 	{
  		if ( parentPID == getpid() )
- 		{
  			pid = fork();
- 		}	
- 	}
 
 	// CONSUMER. PARENT WAITS FOR SUBTOTAL TO NOT BE EMPTY.
 	// ONLY PARENT WILL HAVE pid != 0, AS FORK RETURNS 0 TO CHILDREN.
@@ -147,7 +152,7 @@ int main(int argc, char* argv[])
 
 	// OUTPUT FINAL TOTAL
 	printf("\nFINAL TOTAL: %d\n", total);
-	
+
 	return 0;
 }
 //---------------------------------------------------------------------------
