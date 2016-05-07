@@ -1,9 +1,9 @@
  /***************************************************************************
- *	FILE: pmms.h
- *	AUTHOR: Connor Beardsmore - 15504319
- *	UNIT: OS200 Assignment S1 - 2016
- *	PURPOSE: Header file for pmms.c
- *	LAST MOD: 07/05/16
+ *  FILE: pmms.h
+ *  AUTHOR: Connor Beardsmore - 15504319
+ *  UNIT: OS200 Assignment S1 - 2016
+ *  PURPOSE: Header file for pmms.c
+ *  LAST MOD: 07/05/16
  *  REQUIRES: stdio.h, stdlib.h, unistd.h, fcntl.h, semaphore.h, mman.h
  *            stat.h, wait.h, fileIO.h
  ***************************************************************************/

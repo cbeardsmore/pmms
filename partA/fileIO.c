@@ -1,9 +1,9 @@
  /***************************************************************************
- *	FILE: fileIO.c
- *	AUTHOR: Connor Beardsmore - 15504319
- *	UNIT: OS200 Assignment S1 - 2016
- *	PURPOSE: Perform reading of matrix elements from a file
- *	LAST MOD: 07/05/16
+ *  FILE: fileIO.c
+ *  AUTHOR: Connor Beardsmore - 15504319
+ *  UNIT: OS200 Assignment S1 - 2016
+ *  PURPOSE: Perform reading of matrix elements from a file
+ *  LAST MOD: 07/05/16
  *  REQUIRES: fileIO.h
  ***************************************************************************/
 

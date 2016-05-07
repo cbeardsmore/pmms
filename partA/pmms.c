@@ -1,9 +1,9 @@
  /***************************************************************************
- *	FILE: pmms.c
- *	AUTHOR: Connor Beardsmore - 15504319
- *	UNIT: OS200 Assignment S1 - 2016
- *	PURPOSE: Matrix multiplication using multiprocessing and shared memory
- *	LAST MOD: 07/05/16
+ *  FILE: pmms.c
+ *  AUTHOR: Connor Beardsmore - 15504319
+ *  UNIT: OS200 Assignment S1 - 2016
+ *  PURPOSE: Matrix multiplication using multiprocessing and shared memory
+ *  LAST MOD: 07/05/16
  *  REQUIRES: pmms.h
  ***************************************************************************/
 
