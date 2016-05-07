@@ -3,7 +3,7 @@
  *	AUTHOR: Connor Beardsmore - 15504319
  *	UNIT: OS200 Assignment S1 - 2016
  *	PURPOSE: Perform reading of matrix elements from a file
- *	LAST MOD: 16/04/16
+ *	LAST MOD: 07/05/16
  *  REQUIRES: fileIO.h
  ***************************************************************************/
 
@@ -28,11 +28,10 @@ int readFile( char* filename, int* matrix, int rows, int cols)
         return -1;
     }
 
-<<<<<<< HEAD
     // ITERATE TO FILL ALL MATRIX ROWS
     for ( int ii = 0; ii < rows; ii++ )
     {
-        // ITERATE TO FILL ALL MATRIX ROWS
+        // ITERATE TO FILL ALL MATRIX COLS
         offset = ii * cols;
         for ( int jj = 0; jj < cols; jj++ )
         {
@@ -42,50 +41,21 @@ int readFile( char* filename, int* matrix, int rows, int cols)
                 // CHECK THAT ENOUGH VALUES HAVE BEEN READ
                 if ( (offset + jj) < (rows * cols - 1) )
                 {
-                    fprintf( stderr, "ERROR - not enough matrix values" );
-                    status = -1;
+                    fprintf( stderr, "ERROR - not enough matrix values\n" );
+                    return -1;
                 }
                 // CHECK THAT NO ERROR FORCED EARLY EXIT
                 else if ( ferror(f) )
                 {
                     perror("ERROR - reading matrix file!\n");
-                    status = -1;
+                    return -1;
                 }
             }
         }
     }
 
     fclose(f);
-    return status;
-=======
-	// ITERATE TO FILL ALL MATRIX ROWS
-	for ( int ii = 0; ii < rows; ii++ )
-	{
-		// ITERATE TO FILL ALL MATRIX ROWS
-		offset = ii * cols;
-		for ( int jj = 0; jj < cols; jj++ )
-		{
-			nRead = fscanf( f, "%d", ( &matrix[offset + jj] ) );
-			if ( nRead < 0 )
-			{
-				// CHECK THAT ENOUGH VALUES HAVE BEEN READ
-				if ( (offset + jj) < (rows * cols - 1) )
-				{
-					fprintf( stderr, "ERROR - not enough matrix values\n" );
-					return -1;
-				}
-				// CHECK THAT NO ERROR FORCED EARLY EXIT
-				else if ( ferror(f) )
-				{
-					perror("ERROR - reading matrix file!\n");
-					return -1;
-				}
-			}
-		}
-	}
-
-	fclose(f);
-	return 0;
->>>>>>> 643cc5dea1cd7c004e6bab863f414e99d495b9a0
+    return 0;
 }
+
 //--------------------------------------------------------------------------

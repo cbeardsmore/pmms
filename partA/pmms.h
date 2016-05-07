@@ -3,7 +3,7 @@
  *	AUTHOR: Connor Beardsmore - 15504319
  *	UNIT: OS200 Assignment S1 - 2016
  *	PURPOSE: Header file for pmms.c
- *	LAST MOD: 26/04/16
+ *	LAST MOD: 07/05/16
  *  REQUIRES: stdio.h, stdlib.h, unistd.h, fcntl.h, semaphore.h, mman.h
  *            stat.h, wait.h, fileIO.h
  ***************************************************************************/
@@ -27,31 +27,32 @@
 
 //---------------------------------------------------------------------------
 // STRUCT: Stores the value of subtotal and the ID of the child that
-//		   created it. Also stores row number that the child calculated.
+//         created it. Also stores row number that the child calculated.
 
 typedef struct
 {
-	int value;
-	int childPID;
-	int rowNum;
+    int value;
+    int childPID;
+    int rowNum;
 } Subtotal;
 
 //---------------------------------------------------------------------------
-// STRUCT: Stores 3 locks for use in producer-consumer problem. Mutex
-//         provides mutual exclusion to data. Full and empty are semaphores
-//         to signal actions from the producer and consumer.
+// STRUCT: Stores 3 locks for use in producer-consumer problem.
+//         Mutex provides mutual exclusion to data.
+//         Full and empty are semaphores to signal actions
+//         from the producer and consumer.
 
 typedef struct
 {
-	sem_t mutex;
-	sem_t full;
-	sem_t empty;
+    sem_t mutex;
+    sem_t full;
+    sem_t empty;
 } Synchron;
 
 //---------------------------------------------------------------------------
 // FUNCTION PROTOTYPES
 
-void producer( Synchron*, Subtotal*, int*, int*, int*, int, int);
+void producer(Synchron*, Subtotal*, int*, int*, int*, int, int);
 void consumer(Synchron*, Subtotal*, int*, int);
 int createLocks(Synchron*);
 int destroyLocks(Synchron*);
