@@ -25,7 +25,7 @@
 typedef struct
 {
 	int value;
-	int threadID;
+	long threadID;
 	int rowNumber;
 } Subtotal;
 
@@ -58,8 +58,8 @@ int K;
 //---------------------------------------------------------------------------
 // FUNCTION DECLARATIONS
 
-void* producer(void* ptr);
-void* consumer(void* ptr);
+void* producer();
+void* consumer();
 int destroyLocks();
 int createLocks();
 void freeMatrices(int*, int*, int*);

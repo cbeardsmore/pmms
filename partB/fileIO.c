@@ -19,7 +19,6 @@ int readFile( char* filename, int* matrix, int rows, int cols)
 {
 	int nRead;
 	int offset = 0;
-	int status = 0;
 
 	// OPEN FILE AND CONFIRM NO ERRORS OCCURRED
 	FILE* f = fopen( filename, "r" );
@@ -42,20 +41,20 @@ int readFile( char* filename, int* matrix, int rows, int cols)
 				// CHECK THAT ENOUGH VALUES HAVE BEEN READ
 				if ( (offset + jj) < (rows * cols - 1) )
 				{
-					fprintf( stderr, "ERROR - not enough matrix values" );
-					status = -1;
+					fprintf( stderr, "ERROR - not enough matrix values\n" );
+					return -1;
 				}
 				// CHECK THAT NO ERROR FORCED EARLY EXIT
 				else if ( ferror(f) )
 				{
 					perror("ERROR - reading matrix file!\n");
-					status = -1;
+					return -1;
 				}
 			}
 		}
 	}
 
 	fclose(f);
-	return status;
+	return 0;
 }
 //--------------------------------------------------------------------------

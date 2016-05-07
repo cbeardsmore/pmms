@@ -46,14 +46,12 @@ int main(int argc, char* argv[])
 	status = readFile( fileA, first, M, N );
 	if ( status != 0 )
 	{
-		fprintf( stderr, "ERROR - reading first file" );
 		freeMatrices(first, second, product);
 		return -1;
 	}
 	status = readFile( fileB, second, N, K );
 	if ( status != 0 )
 	{
-		fprintf( stderr, "ERROR - reading second file" );
 		freeMatrices(first, second, product);
 		return -1;
 	}
@@ -96,11 +94,8 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	// PRINT CONTENT OF ALL 3 MATRICES
-	printMatrices( first, second, product, M, N, K );
-
 	// OUTPUT FINAL TOTAL
-	printf("\nFINAL TOTAL: %d\n", grandTotal);;
+	printf("Total: %d\n", grandTotal);;
 
 	// FREE ALL MALLOC'D MEMORY
 	freeMatrices(first, second, product);
@@ -114,7 +109,7 @@ int main(int argc, char* argv[])
 // 						  first (Matrix*), second (Matrix*), product (Matrix*)
 // PURPOSE: Parent process consumes the subtotal + childPID create by children.
 
-void* producer( void* ptr )
+void* producer()
 {
 	int rowNumber = 0;
 	int value;
@@ -149,7 +144,7 @@ void* producer( void* ptr )
 		pthread_cond_wait( &locks.empty, &locks.mutex );
 
 		subtotal.value = total;
-		subtotal.threadID = rowNumber;
+		subtotal.threadID = pthread_self();
 
 	pthread_cond_signal( &locks.full );
 	pthread_mutex_unlock( &locks.mutex );
@@ -163,7 +158,7 @@ void* producer( void* ptr )
 // IMPORT: locks (Synchron*), subtotal (Subtotal*), total (int*)
 // PURPOSE: Parent process consumes the subtotal + threadID create by thread.
 
-void* consumer(void* ptr)
+void* consumer()
 {
 	grandTotal = 0;
 
@@ -174,8 +169,8 @@ void* consumer(void* ptr)
 			while ( subtotal.value == 0 )
 				pthread_cond_wait( &locks.full, &locks.mutex );
 
-			printf( "subtotal: %d,", subtotal.value );
-			printf( " threadID: %d\n", subtotal.threadID );
+			printf( "Subtotal produced by thread with ID " );
+			printf( "%ld: %d\n", subtotal.threadID, subtotal.value );
 			grandTotal += subtotal.value;
 			subtotal.value = SUBTOTAL_EMPTY;
 			subtotal.threadID = SUBTOTAL_EMPTY;
