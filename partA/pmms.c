@@ -94,13 +94,11 @@ int main(int argc, char* argv[])
 	status = readFile( fileA, first, M, N );
 	if ( status != 0 )
 	{
-		fprintf( stderr, "ERROR - reading first file" );
 		return -1;
 	}
 	status = readFile( fileB, second, N, K );
 	if ( status != 0 )
 	{
-		fprintf( stderr, "ERROR - reading second file" );
 		return -1;
 	}
 
@@ -151,7 +149,7 @@ int main(int argc, char* argv[])
 	}
 
 	// OUTPUT FINAL TOTAL
-	printf("\nFINAL TOTAL: %d\n", total);
+	printf("Total: %d\n", total);
 
 	return 0;
 }
@@ -226,8 +224,8 @@ void consumer(Synchron* locks, Subtotal* subtotal, int* total, int productRows)
 		sem_wait(&locks->full);
 			sem_wait(&locks->mutex);
 
-			printf( "subtotal: %d,", subtotal->value );
-			printf( " childPID: %d\n", subtotal->childPID );
+			printf( "Subtotal produced by process with ID " );
+			printf( "%d: %d\n", subtotal->childPID, subtotal->value );
 			*total += subtotal->value;
 
 			// SET VALUES BACK TO EMPTY
