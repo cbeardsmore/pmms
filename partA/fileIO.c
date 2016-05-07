@@ -17,17 +17,47 @@
 
 int readFile( char* filename, int* matrix, int rows, int cols)
 {
-	int nRead;
-	int offset = 0;
+    int nRead;
+    int offset = 0;
 
-	// OPEN FILE AND CONFIRM NO ERRORS OCCURRED
-	FILE* f = fopen( filename, "r" );
-	if ( f == NULL )
-	{
-		perror( "ERROR - opening file!\n" );
-		return -1;
-	}
+    // OPEN FILE AND CONFIRM NO ERRORS OCCURRED
+    FILE* f = fopen( filename, "r" );
+    if ( f == NULL )
+    {
+        perror( "ERROR - opening file!\n" );
+        return -1;
+    }
 
+<<<<<<< HEAD
+    // ITERATE TO FILL ALL MATRIX ROWS
+    for ( int ii = 0; ii < rows; ii++ )
+    {
+        // ITERATE TO FILL ALL MATRIX ROWS
+        offset = ii * cols;
+        for ( int jj = 0; jj < cols; jj++ )
+        {
+            nRead = fscanf( f, "%d", ( &matrix[offset + jj] ) );
+            if ( nRead < 0 )
+            {
+                // CHECK THAT ENOUGH VALUES HAVE BEEN READ
+                if ( (offset + jj) < (rows * cols - 1) )
+                {
+                    fprintf( stderr, "ERROR - not enough matrix values" );
+                    status = -1;
+                }
+                // CHECK THAT NO ERROR FORCED EARLY EXIT
+                else if ( ferror(f) )
+                {
+                    perror("ERROR - reading matrix file!\n");
+                    status = -1;
+                }
+            }
+        }
+    }
+
+    fclose(f);
+    return status;
+=======
 	// ITERATE TO FILL ALL MATRIX ROWS
 	for ( int ii = 0; ii < rows; ii++ )
 	{
@@ -56,5 +86,6 @@ int readFile( char* filename, int* matrix, int rows, int cols)
 
 	fclose(f);
 	return 0;
+>>>>>>> 643cc5dea1cd7c004e6bab863f414e99d495b9a0
 }
 //--------------------------------------------------------------------------
