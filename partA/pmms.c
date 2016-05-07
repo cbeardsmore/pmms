@@ -148,6 +148,18 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	// UNLINK AND CLOSE SHARED MEMORY SEGMENTS
+	status += close(firstFD);
+	status += close(secondFD);
+	status += close(productFD);
+	status += close(subtotalFD);
+	status += close(locksFD);
+	if ( status != 0 )
+	{
+		fprintf( stderr, "ERROR - closing shared memory\n");
+		return -1;
+	}
+
 	// OUTPUT FINAL TOTAL
 	printf("Total: %d\n", total);
 
