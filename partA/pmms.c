@@ -58,10 +58,10 @@ int main(int argc, char* argv[])
 	productFD = shm_open( "matriXC", O_CREAT | O_RDWR, 0666 );
 	subtotalFD = shm_open( "subtotal", O_CREAT | O_RDWR, 0666 );
 	locksFD = shm_open( "sync", O_CREAT | O_RDWR, 0666 );
-	if ( (firstFD == -1) || (secondFD == -1) (productFD == -1) ||
+	if ( (firstFD == -1) || (secondFD == -1) || (productFD == -1) ||
 	 	(subtotalFD == -1) || (locksFD == -1) )
 	{
-		fprintf( stderr, "ERROR - setting shared memory size" );
+		fprintf( stderr, "ERROR - creating shared memory blocks\n" );
 		return -1;
 	}
 
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 	status += ftruncate( locksFD, sizeof(Synchron) );
 	if ( status != 0 )
 	{
-		fprintf( stderr, "ERROR - setting shared memory size" );
+		fprintf( stderr, "ERROR - setting shared memory size\n" );
 		return -1;
 	}
 
