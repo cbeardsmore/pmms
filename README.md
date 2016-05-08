@@ -59,8 +59,3 @@ $$C_{i,j}=\sum_{r=1}^N A_{i,r}B_{r,j}$$
 The image below illustrates an example of this calculation:
 
 ![mm_example.png](./documentation/mm_example.png)
-
--
-#####References
-
-Silberschatz, Abraham, Peter B. Galvin, and Greg Gagne. *Operating System Concepts*. 9th ed. Reading, MA: Addison-Wesley, 1994.
