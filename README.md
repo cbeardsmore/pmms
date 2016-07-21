@@ -1,4 +1,3 @@
-######Connor Beardsmore - 15504319
 ######Semester 1, 2016
 
 ##OS200 Assignment  
