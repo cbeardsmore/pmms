@@ -54,9 +54,3 @@ Implementation of a matrix multiplication calculator in C99. The data from the t
 The product matrix C's elements of muliplying matrix A with matrix B is as follows:
 
 	C[i][j] = SUM OF A[i][r] * B[r][j]FROM 1 TO N
-
-The image below illustrates an example of this calculation:
-
-<center>
-![mm_example.png](./documentation/mm_example.png)
-</center>
