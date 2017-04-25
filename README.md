@@ -1,13 +1,13 @@
-######Semester 1, 2016
+# pmms
 
-##OS200 Assignment  
+##### Operating Systems 200 - Multiprocessing and Multithreading 
 
-#####Purpose
+##### Purpose
 
 Implementation of a matrix multiplication calculator in C99. The data from the two matrices to mutiply are read from file with the matrix elements being space seperated. The calculator outputs the subtotal of every row, plus the total of all the row subtotals combined. Part A utilizes Multiprocessing and Part B utilizes Multithreading. Shared memory is established via POSIX's shm_open(). Synchronization is ensured via the use of POSIX semaphores, mutexes and conditions.
  
 -
-#####File List
+##### File List
 
 	.c FILES
 	--------
@@ -26,7 +26,7 @@ Implementation of a matrix multiplication calculator in C99. The data from the t
 	/testFiles
 	
 -
-#####Instructions to Compile + Run
+##### Instructions to Compile + Run
 
 *To Compile:*
 
@@ -49,7 +49,7 @@ Implementation of a matrix multiplication calculator in C99. The data from the t
 - K = Matrix B Columns	
 
 -
-#####Matrix Multiplication
+##### Matrix Multiplication
 
 The product matrix C's elements of muliplying matrix A with matrix B is as follows:
 
